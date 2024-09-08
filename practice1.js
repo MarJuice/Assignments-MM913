@@ -17,10 +17,14 @@ let myAge = 42;
     Lag en variabel som representerer ditt fornavn.
 */
 
+let firstName = "Marius";
+
 /*
     Oppgave: B
     Lag en variabel for å lagre poeng score i et spill
 */
+
+let gameScore = 1;
 
 /*
     Oppgave: C
@@ -28,23 +32,28 @@ let myAge = 42;
     NB! Du skal øke verdien, ikke bare sette den til 5 (husk +)
 */
 
+gameScore += 5;
+
 /*
     Oppgave: D
     Ta variabelen din fra oppgave B og gjør den 10 ganger større. 
 */
 
+gameScore *= 10;
 
 /*
     Oppgave: E
     Lag en variabel for å lagre et telefon nummer (bruk et fiktift nummer)
 */
 
+let phoneNumber = 12345678;
 
 /*
     Oppgave: F
     Lag en variabel som representerer hvorvidt du er en student eller ikke.
 */
 
+let isStudent = true;
 
 /*
     Oppgave: G
@@ -52,8 +61,12 @@ let myAge = 42;
     Her skal xxxx være hentet fra variabelen i oppgave A og xx fra variabelen i oppgave B
 */
 
+console.log(`Hei ${firstName} din score er ${gameScore}`)
+
 /*
     Oppgave: H
     Lag en variabel som skal representere høyest oppnåd score i et spill.
     Set verdien av denne nye variabelen til verdien av variabelen fra oppgave B
 */
+
+let highscore = gameScore;
