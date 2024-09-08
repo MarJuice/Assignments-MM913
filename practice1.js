@@ -61,7 +61,7 @@ let isStudent = true;
     Her skal xxxx være hentet fra variabelen i oppgave A og xx fra variabelen i oppgave B
 */
 
-console.log(`Hei ${firstName} din score er ${gameScore}`)
+console.log(`Hei ${firstName} din score er ${gameScore}`);
 
 /*
     Oppgave: H
