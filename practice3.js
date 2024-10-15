@@ -29,7 +29,13 @@ for(let index = 0; index < people.length; index++){
     * dager til din bursdag
     * mmilimeter regn som faller 
 */
-console.log("Oppgave: A");
+console.log("\nOppgave: A");
+const hrsInDay = 24;
+const minsInHour = 60;
+const secsInMin = 60;
+let waterJuiceRatio = 5;
+let daysUntilBirthday = 157;
+let rainfallDepth = 0;
 
 
 /*
@@ -43,22 +49,31 @@ console.log("Oppgave: A");
     const dlInCoups = 2.36588;
     const antallDL = dlInCoups * 4.5;
 */
-console.log("Oppgave: B");
+console.log("\nOppgave: B");
+const secsIn2h30 = secsInMin * minsInHour * 2.5;
+console.log(secsIn2h30);
 
+const minsIn123d = minsInHour * hrsInDay * 123;
+console.log(minsIn123d);
 
 /*
     Oppgave: C
     Bruk en løkke (for) til å skrive ut tallene fra 1 til 10 
 */
-console.log("Oppgave: C");
-
+console.log("\nOppgave: C");
+for(i=1; i<=10; i++){
+    console.log(i)
+}
 
 
 /*
     Oppgave: D
     Bruk en løkke (for) til å skrive ut tallene fra 10 til 1
 */
-console.log("Oppgave: D");
+console.log("\nOppgave: D");
+for(i=10; i>=1; i--){
+    console.log(i)
+}
 
 
 /*
@@ -66,29 +81,34 @@ console.log("Oppgave: D");
     Denne er litt vanskligere, men du klarer den ;)
     Bruk en løkke (for) til å skrive ut partallene mellom 1 og 100
 */
-console.log("Oppgave: E");
-
+console.log("\nOppgave: E");
+for(i=1; i<=100; i++){
+    if(i % 2 == 0){
+        console.log(i);
+    }
+}
 
 /*
     Oppgave: F
     Fyll inn koden som skal til for å få følgende kode til å skrive ut det som er forventet.
 */
-console.log("Oppgave: F");
+console.log("\nOppgave: F");
 
 const DICTIONARY = {
     hello:"Hei på deg",
-    howAreYou:"hvordan står det til?"
+    howAreYou:"hvordan står det til?",
+    goodQuestionsLately: "Fått noen gode spørsmål i det siste?"
 }
 
-console.log(`${DICTIONARY.hello} Christian ${DICTIONARY.howAreYou}`); //-> Hei på deg Christian, hvordan står det til?
-console.log(`${DICTIONARY.goodQuestionsLatly}`) //-> Fått noen gode spørsmål i det siste?
+console.log(`${DICTIONARY.hello} Christian, ${DICTIONARY.howAreYou}`); //-> Hei på deg Christian, hvordan står det til?
+console.log(`${DICTIONARY.goodQuestionsLately}`); //-> Fått noen gode spørsmål i det siste?
 
 
 /*
     Oppgave: G
     Fyll inn koden som skal til for å få følgende kode til å skrive ut det som er forventet.
 */
-console.log("Oppgave: G");
+console.log("\nOppgave: G");
 
 const DICTIONARY_ML = {
     no:{
@@ -96,10 +116,12 @@ const DICTIONARY_ML = {
         howAreYou:"hvordan står det til?"
     },
     en:{
-
+        hello: "Hi",
+        howAreYou: "how are you?",
+        goodQuestionsLately: "Gotten any good questions lately?"
     }
 }
 
-console.log(`${DICTIONARY.en.hello} Christian ${DICTIONARY.en.howAreYou}`); //-> Hi Christian, how are you?
-console.log(`${DICTIONARY.en.goodQuestionsLatly}`) //-> Gotten anny good questions latly?
+console.log(`${DICTIONARY_ML.en.hello} Christian, ${DICTIONARY_ML.en.howAreYou}`); //-> Hi Christian, how are you?
+console.log(`${DICTIONARY_ML.en.goodQuestionsLately}`); //-> Gotten any good questions lately?
 
