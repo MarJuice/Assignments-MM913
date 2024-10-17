@@ -38,6 +38,7 @@ async function startMenu() {
     print(language.continue);
     await rl.question("");
 
+    console.clear();
     print(language.startScreen, ANSI.COLOR.YELLOW);
     startGame();
 }
@@ -48,7 +49,7 @@ async function startGame() {
     let player = await askForPlayerChoice();
     let npc = makeAIChoice();
     
-    print(`${language.youPicked} ${getDesc(player)} ${language.aiPicked} ${getDesc(npc)}`);
+    print(`${language.youPicked} ${getDesc(player)}, ${language.aiPicked} ${getDesc(npc)}`);
     print(language.winner + evaluateWinner(player, npc));
     
     // ---- Game functions etc..
