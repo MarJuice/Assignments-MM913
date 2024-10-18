@@ -48,6 +48,8 @@ async function startMenu() {
             gameMode = 2;
         } else if (selectedGameMode === "3") {
             gameMode = 3;
+            language = null;
+            await startMenu();
         } else if (selectedGameMode === "4") {
             print(language.exit, ANSI.COLOR.RED);
             process.exit();
@@ -56,13 +58,10 @@ async function startMenu() {
 
     print(language.continue);
     await rl.question("");
-<<<<<<< HEAD
-
     console.clear();
     print(language.startScreen, ANSI.COLOR.YELLOW);
-=======
+
     console.clear();
->>>>>>> c1d7f35db5b4e948b673f16c5d5d69d57ba12585
     startGame();
 }
 
@@ -72,12 +71,10 @@ async function startGame() {
     let player = await askForPlayerChoice();
     let npc = makeAIChoice();
     
-<<<<<<< HEAD
     print(`${language.youPicked} ${getDesc(player)}, ${language.aiPicked} ${getDesc(npc)}`);
-=======
+
     console.clear();
     print(`${language.youPicked} ${getDesc(player)} ${language.aiPicked} ${getDesc(npc)}`);
->>>>>>> c1d7f35db5b4e948b673f16c5d5d69d57ba12585
     print(language.winner + evaluateWinner(player, npc));
     
     // ---- Game functions etc..
