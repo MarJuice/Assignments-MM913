@@ -12,6 +12,7 @@ import { GAME_DICTIONARY, ART } from './dictionary.mjs';
 const CHOICES = { rock: 1, paper: 2, scissors: 3 };
 const LIST_OF_CHOICES = [CHOICES.rock, CHOICES.paper, CHOICES.scissors];
 let language = null;
+let gameMode = null;
 
 print(ANSI.CLEAR_SCREEN);
 
@@ -35,10 +36,27 @@ async function startMenu() {
         } 
     }
 
+    while (gameMode === null) {
+        console.clear();
+        print(language.gameMode);
+        let selectedGameMode = await rl.question("");
+
+        if (selectedGameMode === "1") {
+            gameMode = 1;
+            print(language.startScreen, ANSI.COLOR.YELLOW);
+        } else if (selectedGameMode === "2") {
+            gameMode = 2;
+        } else if (selectedGameMode === "3") {
+            gameMode = 3;
+        } else if (selectedGameMode === "4") {
+            print(language.exit, ANSI.COLOR.RED);
+            process.exit();
+        }
+    }
+
     print(language.continue);
     await rl.question("");
-
-    print(language.startScreen, ANSI.COLOR.YELLOW);
+    console.clear();
     startGame();
 }
 
@@ -48,6 +66,7 @@ async function startGame() {
     let player = await askForPlayerChoice();
     let npc = makeAIChoice();
     
+    console.clear();
     print(`${language.youPicked} ${getDesc(player)} ${language.aiPicked} ${getDesc(npc)}`);
     print(language.winner + evaluateWinner(player, npc));
     
@@ -122,7 +141,9 @@ async function askToRestart() {
         print(language.exit, ANSI.COLOR.RED);
         process.exit();
     } else if (choice === "") {
-        print("...\n")
+        console.clear();
+        print("...\n");
+        print(language.startScreen, ANSI.COLOR.YELLOW);
         startGame();
     } else {
         askToRestart();
