@@ -1,7 +1,5 @@
-//#region 
 import * as readlinePromises from 'node:readline/promises';
 const rl = readlinePromises.createInterface({ input: process.stdin, output: process.stdout });
-//#endregion
 
 import { print } from './lib/output.mjs';
 import { ANSI } from './lib/ansi.mjs';
@@ -40,7 +38,7 @@ async function startMenu() {
 
     while (gameMode === null) {
         console.clear();
-        print(language.startScreen, ANSI.COLOR.YELLOW);
+        print(language.startScreen, ANSI.COLOR.BLUE);
         print(language.gameMode, ANSI.COLOR.CYAN);
 
         let selectedGameMode = await rl.question("");
@@ -48,11 +46,11 @@ async function startMenu() {
         if (selectedGameMode === "1") {
             gameMode = 1;
             console.clear();
-            print(language.startScreen, ANSI.COLOR.YELLOW);
+            print(language.startScreen, ANSI.COLOR.BLUE);
         } else if (selectedGameMode === "2") {
             gameMode = 2;
             console.clear();
-            print(language.startScreen, ANSI.COLOR.YELLOW);
+            print(language.startScreen, ANSI.COLOR.BLUE);
         } else if (selectedGameMode === "3") {
             gameMode = null;
             language = null;
@@ -69,7 +67,7 @@ async function startMenu() {
 }
 
 async function startGame() {
-    print(language.startScreen, ANSI.COLOR.YELLOW);
+    print(language.startScreen, ANSI.COLOR.BLUE);
     print(language.title);
 
     let player1, player2; 
@@ -82,16 +80,15 @@ async function startGame() {
     } else if (gameMode === 2) {
         player1 = await askForPlayerChoice(language.player1);
         console.clear();
-        print(language.startScreen, ANSI.COLOR.YELLOW);
+        print(language.startScreen, ANSI.COLOR.BLUE);
         print(language.waiting);
         player2 = await askForPlayerChoice(language.player2);
         console.clear();
         print(`${language.player1Picked} ${getDesc(player1)}, ${language.player2Picked} ${getDesc(player2)}`);
     }
+    
     evaluateWinner(player1, player2);
     askToRestart();
-    
-    // ---- Game functions etc..
     
     function evaluateWinner(p1Ch, p2Ch) {
         let result = language.player2;

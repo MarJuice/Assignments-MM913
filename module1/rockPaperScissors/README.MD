@@ -4,10 +4,17 @@
   because it messed up with the console formatting the ASCII correctly. Now it still defaults to player 2 winning, but it's the last part of the conditional,
   which allows printing the ASCII with the help of the else-statement.
 
-- I had to rework my dictionary many times, because I couldn't figure out how to select either of the objects, so I was just defaulting to the english dictionary
-  for a long time.
+- I had to change how the dictionary worked by making each language its own object.
 
-- I also changed the start menu, because I didn't check for invalid answers at first, so you could just skip past it and it didn't matter what you answered.
-  It also prompted to press enter and select the language over again, which quickly became annoying.
+- I also had to put the entire game menu and logic into functions in order to implement the ability to replay after each game, otherwise they just run once.
 
-## Limitations in the code:
+## Challenges/limitations in the code:
+
+- The ASCII art only displays the result for player 1 which can be confusing. It works as intended for single player mode however.
+
+- It becomes harder and harder to add more features the bigger the scope of the project becomes. Adding a little bit of content might require restructuring the code. Adding
+  another game mode for "Rock Paper Scissors Spock Lizard" for example is so much more work than just adding (gameMode === 5)
+
+## What could be done differently / improved:
+
+- Code could be more readable and maintainable
