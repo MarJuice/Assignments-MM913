@@ -14,7 +14,8 @@ const GAME_DICTIONARY = {
         title: "La oss spille stein saks papir!",
         continue: "Klikk ENTER for å spille!",
         exit: "Avslutter spillet...",
-        restart: "\nVil du spille enda en runde? Klikk ENTER! (X for å avslutte)"
+        restart: "\nVil du spille enda en runde? Klikk ENTER! ('X' for å avslutte)",
+        gameMode: "Hvilken spillmodus vil du spille? '1' for enkeltspiller, '2' for to spillere, '3' for å endre språk, '4' for å avslutte"
     },
     en:{
         player1: "you",
@@ -31,7 +32,8 @@ const GAME_DICTIONARY = {
         title: "Let's play rock paper scissors!",
         continue: "Press ENTER to play!",
         exit: "Exiting game...",
-        restart: "\nWant to play another round? Press ENTER! (X to exit)",
+        restart: "\nWant to play another round? Press ENTER! ('X' to exit)",
+        gameMode: "Which game mode do you want to play? '1' for singleplayer, '2' for hotseat, '3' to change language, '4' to exit"
     },
     global: {
         prompt: "Norsk (no) / English (en)?"
