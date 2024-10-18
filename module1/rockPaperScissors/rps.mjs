@@ -17,10 +17,12 @@ let gameMode = null;
 print(ANSI.CLEAR_SCREEN);
 
 async function startMenu() {
-
     while (language === null) {
         console.clear();
+        print(ART.global.line, ANSI.COLOR.BLUE);
         print(GAME_DICTIONARY.global.prompt);
+        print(ART.global.splash, ANSI.COLOR.BLUE);
+
         let selectedLanguage = await rl.question("");
 
         if (selectedLanguage.toLowerCase() === "no") {
@@ -40,6 +42,7 @@ async function startMenu() {
         console.clear();
         print(language.startScreen, ANSI.COLOR.YELLOW);
         print(language.gameMode, ANSI.COLOR.CYAN);
+
         let selectedGameMode = await rl.question("");
 
         if (selectedGameMode === "1") {
@@ -62,6 +65,7 @@ async function startMenu() {
     
     console.clear();
     startGame();
+
 }
 
 async function startGame() {
@@ -124,7 +128,7 @@ async function startGame() {
     
         do {
             if (playerLabel) {
-                print(`${playerLabel}: ${language.selectionQuestion}`);
+                print(`[${playerLabel}]: ${language.selectionQuestion}`);
             } else {
                 print(language.selectionQuestion);
             }
