@@ -38,16 +38,20 @@ async function startMenu() {
 
     while (gameMode === null) {
         console.clear();
-        print(language.gameMode);
+        print(language.startScreen, ANSI.COLOR.YELLOW);
+        print(language.gameMode, ANSI.COLOR.CYAN);
         let selectedGameMode = await rl.question("");
 
         if (selectedGameMode === "1") {
             gameMode = 1;
+            console.clear();
             print(language.startScreen, ANSI.COLOR.YELLOW);
         } else if (selectedGameMode === "2") {
             gameMode = 2;
+            console.clear();
+            print(language.startScreen, ANSI.COLOR.YELLOW);
         } else if (selectedGameMode === "3") {
-            gameMode = 3;
+            gameMode = null;
             language = null;
             await startMenu();
         } else if (selectedGameMode === "4") {
@@ -55,27 +59,33 @@ async function startMenu() {
             process.exit();
         }
     }
-
-    print(language.continue);
-    await rl.question("");
-    console.clear();
-    print(language.startScreen, ANSI.COLOR.YELLOW);
-
+    
     console.clear();
     startGame();
 }
 
 async function startGame() {
+    print(language.startScreen, ANSI.COLOR.YELLOW);
     print(language.title);
 
-    let player = await askForPlayerChoice();
-    let npc = makeAIChoice();
-    
-    print(`${language.youPicked} ${getDesc(player)}, ${language.aiPicked} ${getDesc(npc)}`);
+    let player1, player2; 
 
-    console.clear();
-    print(`${language.youPicked} ${getDesc(player)} ${language.aiPicked} ${getDesc(npc)}`);
-    print(language.winner + evaluateWinner(player, npc));
+    if (gameMode === 1) {
+        player1 = await askForPlayerChoice();
+        player2 = makeAIChoice();
+        console.clear();
+        print(`${language.youPicked} ${getDesc(player1)}, ${language.aiPicked} ${getDesc(player2)}`);
+    } else if (gameMode === 2) {
+        player1 = await askForPlayerChoice(language.player1);
+        console.clear();
+        print(language.startScreen, ANSI.COLOR.YELLOW);
+        print(language.waiting);
+        player2 = await askForPlayerChoice(language.player2);
+        console.clear();
+        print(`${language.player1Picked} ${getDesc(player1)}, ${language.player2Picked} ${getDesc(player2)}`);
+    }
+    evaluateWinner(player1, player2);
+    askToRestart();
     
     // ---- Game functions etc..
     
@@ -109,12 +119,16 @@ async function startGame() {
         return language.choices[choice - 1]
     }
     
-    async function askForPlayerChoice() {
-    
+    async function askForPlayerChoice(playerLabel = null) {
         let choice = null;
     
         do {
-            print(language.selectionQuestion);
+            if (playerLabel) {
+                print(`${playerLabel}: ${language.selectionQuestion}`);
+            } else {
+                print(language.selectionQuestion);
+            }
+            
             let rawChoice = await rl.question("");
             rawChoice = rawChoice.toUpperCase();
             choice = evaluatePlayerChoice(rawChoice);
@@ -135,26 +149,24 @@ async function startGame() {
         }
         return choice;
     }
-
-    askToRestart()
 }
 
 async function askToRestart() {
-    print(language.restart);
+    print(language.restart, ANSI.COLOR.CYAN);
 
     let choice = await rl.question("");
 
     if (choice.toUpperCase() === "X") {
-        print(language.exit, ANSI.COLOR.RED);
-        process.exit();
+        console.clear();
+        gameMode = null;
+        startMenu();
     } else if (choice === "") {
         console.clear();
-        print("...\n");
-        print(language.startScreen, ANSI.COLOR.YELLOW);
         startGame();
     } else {
         askToRestart();
     }
+    
 }
 
 startMenu();
