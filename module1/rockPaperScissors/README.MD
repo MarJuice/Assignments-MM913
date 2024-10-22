@@ -21,9 +21,6 @@
 - Adding both singleplayer and two player mode for the Spock Lizard version was really difficult and confusing, especially when it became harder to read and understand my
   previous code. Every previous action now also has to consider the game mode, both with the display of the prompts and how the game logic works.
 
-- I don't know if there's a better way to do it, but some functions call themselves if they don't get the expected answer. It's meant to force the player to pick one of the
-  available options, but it could be recursive(?).
-
 ## What could be done differently / improved:
 
 - Code could be more readable and maintainable. There are a lot of console commands scattered everywhere in the code for the sake of keeping the game screen clean, but it could
@@ -32,3 +29,6 @@
 - Game mode selection is a bit scuffed, right now it treats singleplayer and two player Spock Lizard mode as 5.1 and 5.2.
 
 - There are probably way better ways of implementing the features than what I did.
+
+- I don't know if there's a better way to do it, but some functions call themselves if they don't get the expected answer. It's meant to force the player to pick one of the
+  available options, but it could be recursive(?). A while-loop for example would probably be better for the inner functions and also more efficient, but my code still worked.
