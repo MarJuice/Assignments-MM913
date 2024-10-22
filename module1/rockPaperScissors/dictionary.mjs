@@ -7,6 +7,7 @@ const GAME_DICTIONARY = {
         draw: "Det ble uavgjort",
         winner: "Vinneren er",
         selectionQuestion: "Gjør valget ditt (S)tein, S(A)ks, (P)apir",
+        selectionQuestionExpansion: "Gjør valget ditt (S)tein, S(A)ks, (P)apir, (Z)Spock, (Ø)gle ",
         player1Picked: "Spiller 1 valgte",
         player2Picked: "Spiller 2 valgte",
         youPicked: "Du valgte",
@@ -14,12 +15,15 @@ const GAME_DICTIONARY = {
         rock: "S",
         paper: "P",
         scissors: "A",
-        choices: ["Stein", "Papir", "Saks"],
+        spock: "Z",
+        lizard: "Ø",
+        choices: ["Stein", "Papir", "Saks", "Spock", "Øgle"],
         title: "La oss spille stein saks papir!",
         exit: "Avslutter spillet...",
         restart: "\n'ENTER' for å spille en ny runde! \n'X' for å gå til startmenyen",
-        gameMode: "Hvilken spillmodus vil du spille? \n'1' for enkeltspiller, \n'2' for to spillere, \n'3' for å endre språk, \n'4' for å avslutte",
-        waiting: "Venter på spiller 2..."
+        gameMode: "Hvilken spillmodus vil du spille? \n'1' for enkeltspiller \n'2' for to spillere \n'3' for å endre språk \n'4' for å avslutte \n'5' for å spille utvidelsen",
+        waiting: "Venter på spiller 2...",
+        rpslsMode: "'1' eller '2' spillere?"
     },
     en:{
         player: "you",
@@ -29,6 +33,7 @@ const GAME_DICTIONARY = {
         draw: "It's a draw",
         winner: "The winner is",
         selectionQuestion: "Make your choice: (R)ock, (P)aper, (S)cissors",
+        selectionQuestionExpansion: "Make your choice: (R)ock, (P)aper, (S)cissors, (Z)Spock, (L)izard",
         player1Picked: "Player 1 picked",
         player2Picked: "Player 2 picked",
         youPicked: "You picked",
@@ -36,12 +41,15 @@ const GAME_DICTIONARY = {
         rock: "R",
         paper: "P",
         scissors: "S",
-        choices: ["Rock", "Paper", "Scissors"],
+        spock: "Z",
+        lizard: "L",
+        choices: ["Rock", "Paper", "Scissors", "Spock", "Lizard"],
         title: "Let's play rock paper scissors!",
         exit: "Exiting game...",
         restart: "\n'ENTER' to play again! \n'X' to return to the start menu",
-        gameMode: "Which game mode do you want to play? \n'1' for singleplayer, \n'2' for hotseat, \n'3' to change language, \n'4' to exit",
+        gameMode: "Which game mode do you want to play? \n'1' for singleplayer \n'2' for hotseat \n'3' to change language \n'4' to exit \n'5' to play expansion",
         waiting: "Waiting for Player 2...",
+        rpslsMode: "'1' or '2' players?"
     },
     global: {
         prompt: "Norsk (no) / English (en) ?"
