@@ -72,6 +72,9 @@ const HANGMAN_UI = [`
       |
 =========`]
 
-
+const splash = 
+`
+test
+`
 
 export { HANGMAN_UI }

@@ -36,9 +36,9 @@ do {
         }
     } else {
         print(" DU TAR FEIL !!!!!!!", RED);
-        language.wrongGuesses.push(guess);
+        wrongGuesses.push(guess);
 
-        if (language.wrongGuesses.length >= HANGMAN_UI.length - 1) {
+        if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
             isGameOver = true;
             print("Du har daua", RED);
         }
@@ -87,8 +87,8 @@ function updateUI() {
 
     console.clear();
     print(guessedWord.join(""), GREEN);
-    print(HANGMAN_UI[language.wrongGuesses.length]);
-    if (language.wrongGuesses.length > 0) {
+    print(HANGMAN_UI[wrongGuesses.length]);
+    if (wrongGuesses.length > 0) {
         print(language.wrongGuesses + RED + wrongGuesses.join() + RESET);
     }
 }
