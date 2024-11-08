@@ -12,4 +12,4 @@ const dictionary = {
  
 }
 
-export default dictionary
+export default dictionary;

@@ -13,30 +13,32 @@ let guessedWord = createGuessList(word.length);
 let wrongGuesses = [];
 let isGameOver = false;
 
+let language = dictionary.no
+
 do {
 
     updateUI();
 
     // Gjette en bokstav || ord.  (|| betyr eller).
-    let guess = (await rl.question(dictionary.guessPrompt)).toLowerCase();
+    let guess = (await rl.question(language.guessPrompt)).toLowerCase();
 
     if (isWordGuessed(word, guess)) {
-        print(dictionary.winCelebration, GREEN);
+        print(language.winCelebration, GREEN);
         isGameOver = true;
     }
     else if (word.includes(guess)) {
 
         uppdateGuessedWord(guess);
 
-        if (isWordGuessed(word, guessedWord)) {
+        if (isWordGuessed(word, language.guessedWord)) {
             print("Hurra du gjettet ordet", GREEN);
             isGameOver = true;
         }
     } else {
         print(" DU TAR FEIL !!!!!!!", RED);
-        wrongGuesses.push(guess);
+        language.wrongGuesses.push(guess);
 
-        if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
+        if (language.wrongGuesses.length >= HANGMAN_UI.length - 1) {
             isGameOver = true;
             print("Du har daua", RED);
         }
@@ -85,9 +87,9 @@ function updateUI() {
 
     console.clear();
     print(guessedWord.join(""), GREEN);
-    print(HANGMAN_UI[wrongGuesses.length]);
-    if (wrongGuesses.length > 0) {
-        print(dictionary.wrongGuesses + RED + wrongGuesses.join() + RESET);
+    print(HANGMAN_UI[language.wrongGuesses.length]);
+    if (language.wrongGuesses.length > 0) {
+        print(language.wrongGuesses + RED + wrongGuesses.join() + RESET);
     }
 }
 
