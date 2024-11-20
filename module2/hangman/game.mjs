@@ -19,6 +19,7 @@ let timePlayed = 0;
 await languageSelection(); 
 
 async function languageSelection() {
+    console.clear();
     let selectedLanguage = await rl.question(splash);
 
     if (selectedLanguage.toLowerCase() == "no") {
