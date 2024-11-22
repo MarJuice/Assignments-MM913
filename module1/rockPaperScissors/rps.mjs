@@ -110,6 +110,7 @@ async function startGame() {
     askToRestart();
 }
     
+//#region Game logic functions
 // Check choices to determine game result
 function evaluateWinner(p1Ch, p2Ch) {
     let result = language.player2;
@@ -211,3 +212,4 @@ async function askToRestart() {
 }
 
 startMenu();
+//#endregion
