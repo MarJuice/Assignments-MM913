@@ -6,6 +6,7 @@ import { ANSI } from './lib/ansi.mjs';
 import { getRandomItemFromArray } from './lib/random.mjs';
 import { GAME_DICTIONARY, ART } from './dictionary.mjs';
 
+//#region Start game menu
 const CHOICES = { rock: 1, paper: 2, scissors: 3, spock: 4, lizard: 5 };
 const LIST_OF_CHOICES = [CHOICES.rock, CHOICES.paper, CHOICES.scissors, CHOICES.spock, CHOICES.lizard];
 let language = null;
@@ -35,6 +36,7 @@ async function startMenu() {
         } 
     }
 
+    // Game mode selection
     while (gameMode === null) {
         console.clear();
         print(language.startScreen, ANSI.COLOR.BLUE);
@@ -42,20 +44,20 @@ async function startMenu() {
 
         let selectedGameMode = await rl.question("");
 
-        if (selectedGameMode === "1") {
+        if (selectedGameMode === "1") { // Player vs AI
             gameMode = 1;
             print(language.startScreen, ANSI.COLOR.BLUE);
-        } else if (selectedGameMode === "2") {
+        } else if (selectedGameMode === "2") { // 2 Player Hotseat
             gameMode = 2;
             print(language.startScreen, ANSI.COLOR.BLUE);
-        } else if (selectedGameMode === "3") {
+        } else if (selectedGameMode === "3") { // Return to language selection
             gameMode = null;
             language = null;
             await startMenu();
-        } else if (selectedGameMode === "4") {
+        } else if (selectedGameMode === "4") { // Exit game
             print(language.exit, ANSI.COLOR.RED);
             process.exit();
-        } else if (selectedGameMode === "5") {
+        } else if (selectedGameMode === "5") { // Rock paper scissors spock lizard mode
             await expansionMode();
         }
     }
@@ -65,46 +67,50 @@ async function startMenu() {
 
 }
 
+// Ask for player vs AI or 2 player hotseat
 async function expansionMode() {
     console.clear();
     print(language.startScreen, ANSI.COLOR.BLUE);
     print(language.rpslsMode);
 
     let playerSelect = await rl.question("");
-    if (playerSelect === "1") {
+    if (playerSelect === "1") { // Player vs AI
         gameMode = 5.1;
-    } else if (playerSelect === "2") {
+    } else if (playerSelect === "2") { // 2 Player Hotseat
         gameMode = 5.2;
     } else {
         await expansionMode();
     }
 }
+//#endregion
 
+// Main game loop
 async function startGame() {
     print(language.startScreen, ANSI.COLOR.BLUE);
     print(language.title);
 
     let player1, player2; 
 
-    if (gameMode === 1 || gameMode === 5.1) {
-        player1 = await askForPlayerChoice();
+    if (gameMode === 1 || gameMode === 5.1) { // Player vs AI
+        player1 = await askForPlayerChoice(); // Player input
         player2 = makeAIChoice();
         console.clear();
-        print(`${language.youPicked} ${getDesc(player1)}, ${language.aiPicked} ${getDesc(player2)}`);
-    } else if (gameMode === 2 || gameMode === 5.2) {
-        player1 = await askForPlayerChoice(language.player1);
-        console.clear();
+        print(`${language.youPicked} ${getDesc(player1)}, ${language.aiPicked} ${getDesc(player2)}`); // Results
+    } else if (gameMode === 2 || gameMode === 5.2) { // 2 Player Hotseat
+        player1 = await askForPlayerChoice(language.player1); // Ask player 1 iput
+        console.clear(); // Hide their answer for player 2
         print(language.startScreen, ANSI.COLOR.BLUE);
         print(language.waiting);
-        player2 = await askForPlayerChoice(language.player2);
+        player2 = await askForPlayerChoice(language.player2); // Ask player 2 input
         console.clear();
-        print(`${language.player1Picked} ${getDesc(player1)}, ${language.player2Picked} ${getDesc(player2)}`);
+        print(`${language.player1Picked} ${getDesc(player1)}, ${language.player2Picked} ${getDesc(player2)}`); // Results
     }
     
     evaluateWinner(player1, player2);
     askToRestart();
 }
     
+// Check choices to determine game result
 function evaluateWinner(p1Ch, p2Ch) {
     let result = language.player2;
 
@@ -143,11 +149,11 @@ async function askForPlayerChoice(playerLabel = null) {
     let choice = null;
 
     do {
-        if (playerLabel) {
+        if (playerLabel) { // playerLabel is true if 2 player hotseat has been selected
             if (gameMode === 5.1 || gameMode === 5.2) {
-                print(`[${playerLabel}]: ${language.selectionQuestionExpansion}`);
+                print(`[${playerLabel}]: ${language.selectionQuestionExpansion}`); // Includes Spock and Lizard options
             } else {
-                print(`[${playerLabel}]: ${language.selectionQuestion}`);
+                print(`[${playerLabel}]: ${language.selectionQuestion}`); // Default rock, paper, scissors
             }
         } else {
             if (gameMode === 5.1 || gameMode === 5.2) {
@@ -165,6 +171,7 @@ async function askForPlayerChoice(playerLabel = null) {
     return choice;
 }
 
+// Check player input and return corresponding choice
 function evaluatePlayerChoice(rawChoice) {
     let choice = null;
 
@@ -184,7 +191,7 @@ function evaluatePlayerChoice(rawChoice) {
     return choice;
 }
 
-
+// Prompt user to play again or return to main menu
 async function askToRestart() {
     print(language.restart, ANSI.COLOR.CYAN);
 

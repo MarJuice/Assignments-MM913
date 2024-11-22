@@ -8,6 +8,8 @@ import dictionary from './dictionary.mjs';
 import { splash, titleScreen } from './splash.mjs';
 import { start } from 'node:repl';
 
+//#region Start game menu
+// Initialize variables
 let wordList = [];
 let word = null;
 let guessedWord = [];
@@ -16,6 +18,7 @@ let language = null;
 let isGameOver = false;
 let timePlayed = 0;
 
+// Language selection / splash screen
 await languageSelection(); 
 
 async function languageSelection() {
@@ -38,6 +41,7 @@ async function languageSelection() {
     
 }
 
+// Read words from file, change file depending on language chosen
 function getWordsFromFile() {
     let fileName = '';
 
@@ -58,6 +62,7 @@ function getWordsFromFile() {
     return words;
 }
 
+// Main menu screen with options
 async function startMenu() {
     
     do {
@@ -78,7 +83,10 @@ async function startMenu() {
         }
     } while (menuChoice = null);
 } 
+//#endregion
 
+//#region Game loop
+// Reset game state and variables upon starting new game
 function resetGameState() {
     word = getRandomWord();
     guessedWord = createGuessList(word.length);
@@ -87,30 +95,38 @@ function resetGameState() {
     timePlayed = 0;
 }
 
+// Main game loop
 async function game() {
 
+    // Start blank game state each time
     resetGameState();
 
+
+    // Reset previous guesses, restart timer
     let guessedLetters = [];
     let startTime = Date.now();
 
     do {
         updateUI();
 
+        // Prompt user for guess
         let guess = (await rl.question(`${language.guessPrompt}: `)).toLowerCase();
 
 
+        // Checks for duplicate answers
         if (guessedLetters.includes(guess)) {
             continue;
         }
 
         guessedLetters.push(guess);
         
+        // Check if word guessed is correct
         if (isWordGuessed(word, guess)) {
             print(`${language.winCelebration}: '${word}'`, GREEN);
             isGameOver = true;
         }
         
+        // Check if letter is in word
         if (word.includes(guess)) {
 
             updateGuessedWord(guess);
@@ -132,11 +148,13 @@ async function game() {
 
     } while (isGameOver == false)
 
+    // End timer and display statistics
     let endTime = Date.now();
     timePlayed = (endTime - startTime) / 1000;
     print(`${language.statisticsGuesses}: ${guessedLetters.length}`, YELLOW);
     print(`${language.statisticsTime}: ${timePlayed}s`, YELLOW);
 
+    // Prompt user to replay or exit
     await replay();
 
     async function replay() {
@@ -155,7 +173,9 @@ async function game() {
         }
     }
 }
+//#endregion
 
+//#region Game logic functions
 function updateGuessedWord(guess) {
     for (let i = 0; i < word.length; i++) {
         if (word[i] == guess) {
@@ -202,3 +222,4 @@ function getRandomWord() {
     const randomIndex = Math.floor(Math.random() * wordList.length);
     return wordList[randomIndex].toLowerCase();
 }
+//#endregion
