@@ -5,101 +5,107 @@ const rl = readlinePromises.createInterface({
     output: process.stdout
 });
 //#endregion
-/*
-let brett = [
-    [1, -1, 1],
-    [-1, -1, -1],
-    [1, 1, 0],
-];*/
 
 import ANSI from "./ANSI.mjs"
 
-let brett = [
+let board = [
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
 ];
 
-//#region Logikken for spillet tre på rad. --------------------------------------------------------
+//#region Game logic
 
-const spiller1 = 1;
-const spiller2 = -1;
+const player1 = 1;
+const player2 = -1;
 
-let resultatAvSpill = "";
-let spiller = spiller1;
+let gameResult = "";
+let player = player1;
 let isGameOver = false
 
 while (isGameOver == false) {
 
     console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-    visBrett(brett);
-    console.log(`Det er spiller ${spillerNavn()} sin tur`)
+    showBoard(board);
+    console.log(`It's player ${playerName()}'s turn`)
 
-    let rad = -1;
-    let kolone = -1;
+    let row = -1;
+    let col = -1;
 
     do {
-        let pos = await rl.question("Hvor setter du merket ditt? ");
-        [rad, kolone] = pos.split(",")
-        rad = rad - 1;
-        kolone = kolone - 1;
-    } while (brett[rad][kolone] != 0)
+        let pos = await rl.question("Place your marker: ");
+        [row, col] = pos.split(",")
+        row = row - 1;
+        col = col - 1;
+    } while (board[row][col] != 0)
 
-    brett[rad][kolone] = spiller;
+    board[row][col] = player;
 
-    vinner = harNoenVunnet(brett);
-    if (vinner != 0) {
+    winner = checkIfWin(board);
+    if (winner != 0) {
         isGameOver = true;
-        resultatAvSpill = `Vinneren er ${spillerNavn(vinner)}`;
-    } else if (erSpilletUavgjort(brett)) {
-        resultatAvSpill = "Det ble uavgjort";
+        gameResult = `The winner is ${playerName(winner)}`;
+    } else if (checkIfDraw(board)) {
+        gameResult = "It's a draw";
         isGameOver = true;
     }
 
-    byttAktivSpiller();
+    changeActivePl();
 }
 
 console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-visBrett(brett);
-console.log(resultatAvSpill);
+showBoard(board);
+console.log(gameResult);
 console.log("Game Over");
 process.exit();
 
-//#endregion---------------------------------------------------------------------------------------
+//#endregion
 
-function harNoenVunnet(brett) {
+function checkIfWin(board) {
 
-    for (let rad = 0; rad < brett.length; rad++) {
+    // Check rows
+    for (let row = 0; row < board.length; row++) {
         let sum = 0;
-        for (let kolone = 0; kolone < brett.length; kolone++) {
-            sum += brett[rad][kolone];
+        for (let col = 0; col < board.length; col++) {
+            sum += board[row][col];
         }
 
         if (Math.abs(sum) == 3) {
-            return sum / 3;
+            return board[row][0];
         }
     }
 
-    for (let kolone = 0; kolone < brett.length; kolone++) {
+    // Check columns
+    for (let col = 0; col < board.length; col++) {
         let sum = 0;
-        for (let rad = 0; rad < brett.length; rad++) {
-            sum += brett[rad][kolone];
+        for (let row = 0; row < board.length; row++) {
+            sum += board[row][col];
         }
 
         if (Math.abs(sum) == 3) {
-            return sum / 3;
+            return board[0][col];
         }
+    }
+
+    // Check diagonals
+    let diag1 = board[0][0] + board[1][1] + board[2][2];
+    let diag2 = board[0][2] + board[1][1] + board[2][0];
+    if (Math.abs(diag1) == 3) {
+        return board[1][1];
+    }
+    if (Math.abs(diag2) == 3) {
+        return board[1][1];
     }
 
     return 0;
 }
 
-function erSpilletUavgjort(brett) {
+function checkIfDraw(board) {
 
-    // Dersom alle felter er fylt så er spillet over. 
-    for (let rad = 0; rad < brett.length; rad++) {
-        for (let kolone = 0; kolone < brett[rad].length; kolone++) {
-            if (brett[rad][kolone] == 0) { // Dersom vi finner 0 på rad,kolonne så er ikke brettet fylt.
+    // Draw if all squares are filled 
+    for (let row = 0; row < board.length; row++) {
+        for (let col = 0; col < board[row].length; col++) {
+            if (board[row][col] == 0) { // If row,col are 0, board is not filled.
                 return false;
             }
         }
@@ -109,43 +115,41 @@ function erSpilletUavgjort(brett) {
 
 }
 
-function visBrett(brett) {
+function showBoard(board) {
 
-    let visningAvBrett = "";
-    for (let i = 0; i < brett.length; i++) {
-        const rad = brett[i];
-        let visningAvRad = "";
-        for (let j = 0; j < rad.length; j++) {
-            let verdi = rad[j];
-            if (verdi == 0) {
-                visningAvRad += "_ ";
-            } else if (verdi == spiller1) {
-                visningAvRad += ANSI.COLOR.GREEN + "X " + ANSI.COLOR_RESET;
+    let boardDisplay = [];
+    for (let i = 0; i < board.length; i++) {
+        let row = [];
+        for (let j = 0; j < board[i].length; j++) {
+            let value = board[i][j];
+            if (value == 0) {
+                row.push("_");
+            } else if (value == player1) {
+                ANSI.COLOR.GREEN + row.push("X") + ANSI.COLOR_RESET;
             } else {
-                visningAvRad += ANSI.COLOR.RED + "O " + ANSI.COLOR_RESET;
+                ANSI.COLOR.RED + row.push("O") + ANSI.COLOR_RESET;
             }
         }
-        visningAvRad += "\n";
-        visningAvBrett += visningAvRad;
+        boardDisplay.push(row);
     }
 
-    console.log(visningAvBrett);
+    console.table(boardDisplay);
 
 }
 
-function spillerNavn(sp = spiller) {
-    if (sp == spiller1) {
-        return "Spiller 1(X)";
+function playerName(pl = player) {
+    if (pl == player1) {
+        return "Player 1(X)";
     } else {
-        return "Spiller 2(O)";
+        return "Player 2(O)";
     }
 }
 
-function byttAktivSpiller() {
-    spiller = spiller * -1;
-    /* if (spiller == spiller1) {
-         spiller = spiller2
-     } else {
-         spiller = spiller1;
-     }*/
+function changeActivePl() {
+    player = player * -1;
+    if (player == player1) {
+         player = player2
+    } else {
+         player = player1;
+    }
 }
