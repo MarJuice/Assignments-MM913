@@ -116,25 +116,15 @@ function checkIfDraw(board) {
 }
 
 function showBoard(board) {
-
-    let boardDisplay = [];
-    for (let i = 0; i < board.length; i++) {
-        let row = [];
-        for (let j = 0; j < board[i].length; j++) {
-            let value = board[i][j];
-            if (value == 0) {
-                row.push("_");
-            } else if (value == player1) {
-                ANSI.COLOR.GREEN + row.push("X") + ANSI.COLOR_RESET;
-            } else {
-                ANSI.COLOR.RED + row.push("O") + ANSI.COLOR_RESET;
-            }
-        }
-        boardDisplay.push(row);
-    }
-
-    console.table(boardDisplay);
-
+console.log(`
+    ╔═══╦═══╦═══╗
+    ║ ${board[0]}  ║ ${board[1]} ║ ${board[2]} ║
+    ╠═══╬═══╬═══╣
+    ║ ${board[0]} ║ ${board[0]} ║ ${board[0]} ║
+    ╠═══╬═══╬═══╣
+    ║ ${board[0]} ║ ${board[0]} ║ ${board[0]} ║
+    ╚═══╩═══╩═══╝
+ `)
 }
 
 function playerName(pl = player) {
