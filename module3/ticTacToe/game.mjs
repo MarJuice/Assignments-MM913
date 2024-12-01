@@ -7,6 +7,7 @@ const rl = readlinePromises.createInterface({
 //#endregion
 
 import ANSI from "./ANSI.mjs"
+import { get } from "node:http";
 
 let board = [
     [0, 0, 0],
@@ -21,22 +22,25 @@ const player2 = -1;
 
 let gameResult = "";
 let player = player1;
-let isGameOver = false
+let isGameOver = false;
 
 while (isGameOver == false) {
 
     console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
     showBoard(board);
-    console.log(`It's ${playerName()}'s turn`)
+    console.log(`It's ${playerName()}'s turn`);
 
-    let row = -1;
-    let col = -1;
+    let row = 0;
+    let col = 0;
 
     do {
+
         let pos = await rl.question("Place your marker: ");
-        [row, col] = pos.split(",")
+        [row, col] = pos.split(",", 2)
+                 
         row = row - 1;
         col = col - 1;
+        
     } while (board[row][col] != 0)
 
     board[row][col] = player;
@@ -116,16 +120,31 @@ function checkIfDraw(board) {
 }
 
 function showBoard(board) {
+    let boardSquares = [];
+
+    for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+            let square = board[row][col];
+
+            if (square == 0) {
+                boardSquares.push(' ');
+            } else if (square == 1) {
+                boardSquares.push('X');
+            } else if (square == -1) {
+                boardSquares.push('O');
+            }
+        }
+    }
 console.log(`
+      1   2   3
     ╔═══╦═══╦═══╗
-    ║ ${board[0][0]} ║ ${board[0][1]} ║ ${board[0][2]} ║
+ 1  ║ ${boardSquares[0]} ║ ${boardSquares[1]} ║ ${boardSquares[2]} ║
     ╠═══╬═══╬═══╣
-    ║ ${board[1][0]} ║ ${board[1][1]} ║ ${board[1][2]} ║
+ 2  ║ ${boardSquares[3]} ║ ${boardSquares[4]} ║ ${boardSquares[5]} ║
     ╠═══╬═══╬═══╣
-    ║ ${board[2][0]} ║ ${board[2][1]} ║ ${board[2][2]} ║
+ 3  ║ ${boardSquares[6]} ║ ${boardSquares[7]} ║ ${boardSquares[8]} ║
     ╚═══╩═══╩═══╝
-    ${player}
- `)
+ `);
 }
 
 function playerName(pl = player) {
