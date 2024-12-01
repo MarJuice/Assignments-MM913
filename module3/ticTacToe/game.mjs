@@ -57,7 +57,7 @@ async function startGame() {
         let winner = checkIfWin(board);
         if (winner != 0) {
             isGameOver = true;
-            gameResult = `The winner is ${playerName(winner)}`;
+            gameResult = `The winner is ${playerName(winner)}!`;
         } else if (checkIfDraw(board)) {
             gameResult = "It's a draw";
             isGameOver = true;
@@ -67,12 +67,9 @@ async function startGame() {
 
     }
 
-    // Print results
-    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-    showBoard(board);
-    console.log(gameResult);
-    console.log("Game Over"+ANSI.COLOR.YELLOW+"\nPress 'R' to restart\nPress 'Q' to exit"+ANSI.RESET);
+    gameOver();
 
+    
 }
 
 //#endregion
@@ -178,16 +175,68 @@ async function inputValidation() {
 
     while (validInput == false) {
         let pos = await rl.question("Place your marker (row,col): ");
-        [row, col] = pos.split(",");
 
-        if (!isNaN(row) && !isNaN(col) && row >= 1 && row <= 3 && col >= 1 && col <= 3) {
+        if (pos.toLowerCase() == "r") {
+            console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET);
+            setTimeout(resetGame, 1000);
+        } else if (pos.toLowerCase() == "q") {
             validInput = true;
-            row -= 1;
-            col -= 1;
+            console.clear();
+            console.log("Thanks for playing!");
+            process.exit();
+        } else {
+
+            [row, col] = pos.split(",");
+           
+            if (!isNaN(row) && !isNaN(col) && row >= 1 && row <= 3 && col >= 1 && col <= 3) {
+                validInput = true;
+                row -= 1;
+                col -= 1;
+            } 
         }
     }
 
     return { row, col };
+}
+
+// Reset game state
+function resetGame() {
+    board = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+    ];
+    isGameOver = false;
+    gameResult = "";
+    player = player1;
+    startGame();
+}
+
+// Print results
+function displayResults() {
+    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
+    showBoard(board);
+    console.log(gameResult);
+    console.log("Game Over"+ANSI.COLOR.YELLOW+"\nPress 'R' to restart\nPress 'Q' to quit"+ANSI.RESET);
+}
+
+// Ask user for input, r for restart, q to quit
+async function gameOver() {
+
+    displayResults();
+    let answer = await rl.question("");
+
+    if (answer.toLowerCase() == "r") {
+        console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET);
+        setTimeout(resetGame, 1000);
+    } else if (answer.toLowerCase() == "q") {
+        console.clear();
+        console.log("Thanks for playing!");
+        process.exit();
+    } else { 
+        console.clear();
+        gameOver();
+    }
 }
 
 startGame();
