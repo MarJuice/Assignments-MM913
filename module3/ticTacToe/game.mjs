@@ -27,7 +27,7 @@ while (isGameOver == false) {
 
     console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
     showBoard(board);
-    console.log(`It's player ${playerName()}'s turn`)
+    console.log(`It's ${playerName()}'s turn`)
 
     let row = -1;
     let col = -1;
@@ -41,7 +41,7 @@ while (isGameOver == false) {
 
     board[row][col] = player;
 
-    winner = checkIfWin(board);
+    let winner = checkIfWin(board);
     if (winner != 0) {
         isGameOver = true;
         gameResult = `The winner is ${playerName(winner)}`;
@@ -118,12 +118,13 @@ function checkIfDraw(board) {
 function showBoard(board) {
 console.log(`
     ╔═══╦═══╦═══╗
-    ║ ${board[0]}  ║ ${board[1]} ║ ${board[2]} ║
+    ║ ${board[0][0]} ║ ${board[0][1]} ║ ${board[0][2]} ║
     ╠═══╬═══╬═══╣
-    ║ ${board[3]} ║ ${board[4]} ║ ${board[5]} ║
+    ║ ${board[1][0]} ║ ${board[1][1]} ║ ${board[1][2]} ║
     ╠═══╬═══╬═══╣
-    ║ ${board[6]} ║ ${board[7]} ║ ${board[8]} ║
+    ║ ${board[2][0]} ║ ${board[2][1]} ║ ${board[2][2]} ║
     ╚═══╩═══╩═══╝
+    ${player}
  `)
 }
 
@@ -137,9 +138,4 @@ function playerName(pl = player) {
 
 function changeActivePl() {
     player = player * -1;
-    if (player == player1) {
-         player = player2
-    } else {
-         player = player1;
-    }
 }
