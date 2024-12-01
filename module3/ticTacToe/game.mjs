@@ -8,6 +8,7 @@ const rl = readlinePromises.createInterface({
 
 import ANSI from "./ANSI.mjs"
 import { get } from "node:http";
+import { start } from "node:repl";
 
 let board = [
     [0, 0, 0],
@@ -20,48 +21,59 @@ let board = [
 const player1 = 1;
 const player2 = -1;
 
+let player1Label = null;
+let player2Label = null;
+
 let gameResult = "";
 let player = player1;
 let isGameOver = false;
 
-while (isGameOver == false) {
+console.clear();
 
-    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-    showBoard(board);
-    console.log(`It's ${playerName()}'s turn`);
+do {
+    player1Label = await rl.question(`Who's playing? ${ANSI.COLOR.BLUE}(Player 1)${ANSI.RESET}: `);
+    player2Label = await rl.question(`Who's playing? ${ANSI.COLOR.RED}(Player 2)${ANSI.RESET}: `);
+} while ( player1Label && player2Label == null);
 
-    let row = 0;
-    let col = 0;
+async function startGame() {
 
-    do {
+    while (isGameOver == false) {
 
-        let pos = await rl.question("Place your marker: ");
-        [row, col] = pos.split(",", 2)
-                 
-        row = row - 1;
-        col = col - 1;
-        
-    } while (board[row][col] != 0)
+        console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
+        showBoard(board);
+        console.log(`It's ${playerName()}'s turn`);
 
-    board[row][col] = player;
+        let row = 0;
+        let col = 0;
 
-    let winner = checkIfWin(board);
-    if (winner != 0) {
-        isGameOver = true;
-        gameResult = `The winner is ${playerName(winner)}`;
-    } else if (checkIfDraw(board)) {
-        gameResult = "It's a draw";
-        isGameOver = true;
+        do {
+            const input = await inputValidation();
+            row = input.row;
+            col = input.col;
+        } while (board[row][col] != 0)
+
+        board[row][col] = player;
+
+        let winner = checkIfWin(board);
+        if (winner != 0) {
+            isGameOver = true;
+            gameResult = `The winner is ${playerName(winner)}`;
+        } else if (checkIfDraw(board)) {
+            gameResult = "It's a draw";
+            isGameOver = true;
+        }
+       
+        changeActivePl();
+
     }
 
-    changeActivePl();
-}
+    // Print results
+    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
+    showBoard(board);
+    console.log(gameResult);
+    console.log("Game Over"+ANSI.COLOR.YELLOW+"\nPress 'R' to restart\nPress 'Q' to exit"+ANSI.RESET);
 
-console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-showBoard(board);
-console.log(gameResult);
-console.log("Game Over");
-process.exit();
+}
 
 //#endregion
 
@@ -127,11 +139,11 @@ function showBoard(board) {
             let square = board[row][col];
 
             if (square == 0) {
-                boardSquares.push(' ');
+                boardSquares.push(" ");
             } else if (square == 1) {
-                boardSquares.push('X');
+                boardSquares.push(ANSI.COLOR.BLUE+"X"+ANSI.RESET);
             } else if (square == -1) {
-                boardSquares.push('O');
+                boardSquares.push(ANSI.COLOR.RED+"O"+ANSI.RESET);
             }
         }
     }
@@ -149,12 +161,33 @@ console.log(`
 
 function playerName(pl = player) {
     if (pl == player1) {
-        return "Player 1(X)";
+        return `${ANSI.COLOR.BLUE+player1Label}(X)${ANSI.RESET}`;
     } else {
-        return "Player 2(O)";
+        return `${ANSI.COLOR.RED+player2Label}(O)${ANSI.RESET}`;
     }
 }
 
 function changeActivePl() {
     player = player * -1;
 }
+
+async function inputValidation() {
+    let validInput = false;
+    let row;
+    let col;
+
+    while (validInput == false) {
+        let pos = await rl.question("Place your marker (row,col): ");
+        [row, col] = pos.split(",");
+
+        if (!isNaN(row) && !isNaN(col) && row >= 1 && row <= 3 && col >= 1 && col <= 3) {
+            validInput = true;
+            row -= 1;
+            col -= 1;
+        }
+    }
+
+    return { row, col };
+}
+
+startGame();
