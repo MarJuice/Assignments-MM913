@@ -30,6 +30,7 @@ let isGameOver = false;
 
 console.clear();
 
+// Let players choose their names
 do {
     player1Label = await rl.question(`Who's playing? ${ANSI.COLOR.BLUE}(Player 1)${ANSI.RESET}: `);
     player2Label = await rl.question(`Who's playing? ${ANSI.COLOR.RED}(Player 2)${ANSI.RESET}: `);
@@ -46,12 +47,14 @@ async function startGame() {
         let row = 0;
         let col = 0;
 
+        // Get player inputs after being validated until board is filled
         do {
             const input = await inputValidation();
             row = input.row;
             col = input.col;
         } while (board[row][col] != 0)
 
+        // 1 or -1 depending on who's turn it is
         board[row][col] = player;
 
         let winner = checkIfWin(board);
@@ -69,11 +72,10 @@ async function startGame() {
 
     gameOver();
 
-    
 }
-
 //#endregion
 
+//#region Functions
 function checkIfWin(board) {
 
     // Check rows
@@ -128,18 +130,21 @@ function checkIfDraw(board) {
 
 }
 
+// Render the board
 function showBoard(board) {
+    // New array to display properly rather than raw data
     let boardSquares = [];
 
     for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 3; col++) {
             let square = board[row][col];
 
+            // Empty squares are blank instead of 0
             if (square == 0) {
                 boardSquares.push(" ");
-            } else if (square == 1) {
+            } else if (square == 1) { // Player 1 markers are changed with X
                 boardSquares.push(ANSI.COLOR.BLUE+"X"+ANSI.RESET);
-            } else if (square == -1) {
+            } else if (square == -1) { // Player 2 markers are changed with O
                 boardSquares.push(ANSI.COLOR.RED+"O"+ANSI.RESET);
             }
         }
@@ -153,9 +158,10 @@ console.log(`
     ╠═══╬═══╬═══╣
  3  ║ ${boardSquares[6]} ║ ${boardSquares[7]} ║ ${boardSquares[8]} ║
     ╚═══╩═══╩═══╝
- `);
+ `); // Board displays the iterated board values rather than raw data
 }
 
+// Print player names with colors
 function playerName(pl = player) {
     if (pl == player1) {
         return `${ANSI.COLOR.BLUE+player1Label}(X)${ANSI.RESET}`;
@@ -164,10 +170,12 @@ function playerName(pl = player) {
     }
 }
 
+// Change active player, player 1 is 1, player 2 is -1
 function changeActivePl() {
     player = player * -1;
 }
 
+// Fix to prevent game from crashing upon invalid input
 async function inputValidation() {
     let validInput = false;
     let row;
@@ -176,6 +184,7 @@ async function inputValidation() {
     while (validInput == false) {
         let pos = await rl.question("Place your marker (row,col): ");
 
+        // First check if player wants to restart or quit
         if (pos.toLowerCase() == "r") {
             console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET);
             setTimeout(resetGame, 1000);
@@ -184,7 +193,7 @@ async function inputValidation() {
             console.clear();
             console.log("Thanks for playing!");
             process.exit();
-        } else {
+        } else { // Otherwise, check if input is valid (number 1-3)
 
             [row, col] = pos.split(",");
            
@@ -240,3 +249,5 @@ async function gameOver() {
 }
 
 startGame();
+
+//#endregion
