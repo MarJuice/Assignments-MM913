@@ -1,5 +1,17 @@
-import { BAD_THINGS, HP_MAX, level, pallet, playerStats, state } from "./gameConstants.mjs";
+import { level1, level2 } from "./levels.mjs";
+import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state } from "./gameConstants.mjs";
 import ANSI from "./ANSI.mjs";
+
+// Load the level
+let levels = [level1, level2];
+let rawLevel = levels[0]; 
+let tempLevel = rawLevel.split("\n");
+for (let i = 0; i < tempLevel.length; i++) {
+    let row = tempLevel[i];
+    let outputRow = row.split("");
+    level.push(outputRow);
+}
+
 
 function draw() {
 
@@ -45,9 +57,9 @@ function draw() {
 }
 
 function renderHUD() {
-    let hpBar = `[${ANSI.COLOR.RED + pad(Math.round(playerStats.hp), "❤️") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "❤️") + ANSI.COLOR_RESET}]`
-    let cash = `$:${playerStats.cash}`;
-    return `${hpBar} ${cash} \n`;
+    let hpBar = `[${ANSI.COLOR.RED + pad(Math.round(playerStats.hp), "❤️") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "❤️") + ANSI.COLOR_RESET} ]`
+    let cash = `$:${playerStats.cash.toFixed(2)}`;
+    return `${hpBar}\n${cash}\n`;
 }
 
 function pad(len, text) {
@@ -58,4 +70,8 @@ function pad(len, text) {
     return output;
 }
 
-export { draw };
+function nextLevel() {
+    state.eventText = "Loading the next level..."
+}
+
+export { draw, nextLevel };
