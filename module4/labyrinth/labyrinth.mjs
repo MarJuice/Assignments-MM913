@@ -12,4 +12,4 @@ function gameLoop() {
     draw();
 }
 
-let gl = setInterval(gameLoop, FPS);
+setInterval(gameLoop, FPS);
