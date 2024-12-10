@@ -1,30 +1,21 @@
 import ANSI from "./ANSI.mjs";
-import { level1 } from "./levels.mjs";
 
 const FPS = 250; // Game refresh rate
-
-// Load level
-let rawLevel = level1;
-let tempLevel = rawLevel.split("\n");
 let level = [];
-for (let i = 0; i < tempLevel.length; i++) {
-    let row = tempLevel[i];
-    let outputRow = row.split("");
-    level.push(outputRow);
-}
 
 // Color palette for symbols
 let pallet = {
-    "█": ANSI.COLOR.LIGHT_GRAY,
     "H": ANSI.COLOR.RED,
     "$": ANSI.COLOR.YELLOW,
-    "B": ANSI.COLOR.GREEN
+    "B": ANSI.COLOR.GREEN,
+    "X": ANSI.COLOR.BLUE
 }
 
 // Game state variables
 const state = {
     isDirty: true, // Has to be object to change state between files
-    eventText: ""
+    eventText: "",
+    currentLevel: 0
 }
 let playerPos = { 
     row: null, 
@@ -35,7 +26,8 @@ let playerPos = {
 const EMPTY = " ";
 const HERO = "H";
 const LOOT = "$";
-const THINGS = [LOOT, EMPTY];
+const DOOR = "X";
+const THINGS = [LOOT, EMPTY, DOOR];
 const BAD_THINGS = ["B"];
 const NPCs = [];
 const POSSIBLE_PICKUPS = [
@@ -50,6 +42,7 @@ const playerStats = { hp: 10, cash: 0, attack: 1.1 };
 
 export {
     BAD_THINGS,
+    DOOR,
     EMPTY,
     FPS,
     HERO,
