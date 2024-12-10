@@ -1,5 +1,7 @@
 import KeyBoardManager from "./keyboardManager.mjs";
-import { level, playerPos, NPCs, THINGS, BAD_THINGS, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, state } from "./gameConstants.mjs";
+import "./prototypes.mjs";
+import { nextLevel } from "./drawGame.mjs";
+import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, state } from "./gameConstants.mjs";
 
 function update() {
 
@@ -47,40 +49,50 @@ function update() {
 
     // Calculate new position on the map
     let tRow = playerPos.row + (1 * drow);
-    let tcol = playerPos.col + (1 * dcol);
+    let tCol = playerPos.col + (1 * dcol);
 
-    if (THINGS.includes(level[tRow][tcol])) { // Check if there's an item where the player moves
+    if (THINGS.includes(level[tRow][tCol])) { // Check if there's an item where the player moves
 
-        let currentItem = level[tRow][tcol];
+        let currentItem = level[tRow][tCol];
         if (currentItem == LOOT) {
 
-            if (Math.random() < 0.95) { // 95% chance to give cash
+            if (Math.random() < 0.90) { // 90% chance to give cash
                 let loot = Number.randomBetween(3, 7);
                 playerStats.cash += loot;
-                state.eventText = `Player gained ${loot}$`; 
-            } else { // 5% chance to give a random item
+                state.eventText = `Player gained ${loot.toFixed(2)}$`; 
+            } else { // 10% chance to give a random item
                 let item = POSSIBLE_PICKUPS.random();
                 playerStats.attack += item.value;
                 state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${item.value}`;
             }
         }
 
+        if (currentItem == DOOR) {
+            if (NPCs.length == 0) { // Only lets the player proceed if all enemies are dead
+                nextLevel();
+            } else {
+                state.eventText = "The door is locked. Defeat all enemies first!";
+                state.isDirty = true; // Makes sure the message is sent, the player doesn't move and won't show the eventMessage otherwise
+                return; // Prevent the player from moving onto the door
+            }
+        }
+
         level[playerPos.row][playerPos.col] = EMPTY; // Remove item after interacting
-        level[tRow][tcol] = HERO; // Place the player on the cell
+        level[tRow][tCol] = HERO; // Place the player on the cell
 
         // Update the players position
         playerPos.row = tRow;
-        playerPos.col = tcol;
+        playerPos.col = tCol;
 
         // Makes sure new frame is drawn afterwards
         state.isDirty = true;
-    } else if (BAD_THINGS.includes(level[tRow][tcol])) { // Handle enemy interaction
+    } else if (BAD_THINGS.includes(level[tRow][tCol])) { // Handle enemy interaction
 
         // Find the correct enemy 
         let antagonist = null;
         for (let i = 0; i < NPCs.length; i++) {
             let b = NPCs[i];
-            if (b.row = tRow && b.col == tcol) {
+            if (b.row == tRow && b.col == tCol) {
                 antagonist = b;
             }
         }
@@ -93,7 +105,12 @@ function update() {
 
         if (antagonist.hp <= 0) { // Checks if enemy dead
             state.eventText += ", and the bastard died" 
-            level[tRow][tcol] = EMPTY; // Clears the cell of dead enemy
+            level[tRow][tCol] = EMPTY; // Clears the cell of dead enemy
+            for (let i = 0; i < NPCs.length; i++) {
+                if (NPCs[i] == antagonist) {
+                    NPCs.splice(i, 1); // Remove the dead enemy from the list
+                }
+            }
         } else {
             // If enemy is not dead, attack back 
             attack = ((Math.random() * MAX_ATTACK) * antagonist.attack).toFixed(2);
@@ -103,7 +120,7 @@ function update() {
 
         // Resets temporary position
         tRow = playerPos.row;
-        tcol = playerPos.col;
+        tCol = playerPos.col;
 
         state.isDirty = true;
     }
@@ -112,6 +129,6 @@ function update() {
 // Get a random number in a specified range
 Number.randomBetween = function (min, max) {
     return Math.random() * (max - min) + min;
-};
+}
 
 export { update };
