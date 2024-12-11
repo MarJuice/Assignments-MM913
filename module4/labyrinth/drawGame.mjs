@@ -5,7 +5,6 @@ import ANSI from "./ANSI.mjs";
 // Load the level
 let levels = [level1, level2];
 let rawLevel = levels[0]; 
-
 function loadLevel() {
     level.length = 0 // Clear current level
     let tempLevel = rawLevel.split("\n");
@@ -60,6 +59,7 @@ function draw() {
     }
 }
 
+// Creates HUD elements
 function renderHUD() {
     let hpBar = `[${ANSI.COLOR.RED + pad(Math.floor(playerStats.hp), "♥") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "♥") + ANSI.COLOR_RESET}]`
     let cash = `$:${playerStats.cash}`;
@@ -81,6 +81,7 @@ function pad(len, text) {
     return output;
 }
 
+// Changes to the next level if there is one, otherwise the player wins
 function nextLevel() {
     state.currentLevel += 1;
     if (state.currentLevel >= levels.length) {
@@ -91,6 +92,7 @@ function nextLevel() {
     }
 }
 
+// If the player beats the last level
 function victory() {
     console.clear();
     console.log("Congratulations, you won!");
