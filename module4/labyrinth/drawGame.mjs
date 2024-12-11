@@ -5,13 +5,17 @@ import ANSI from "./ANSI.mjs";
 // Load the level
 let levels = [level1, level2];
 let rawLevel = levels[0]; 
-let tempLevel = rawLevel.split("\n");
-for (let i = 0; i < tempLevel.length; i++) {
-    let row = tempLevel[i];
-    let outputRow = row.split("");
-    level.push(outputRow);
-}
 
+function loadLevel() {
+    level.length = 0 // Clear current level
+    let tempLevel = rawLevel.split("\n");
+    for (let i = 0; i < tempLevel.length; i++) {
+        let row = tempLevel[i];
+        let outputRow = row.split("");
+        level.push(outputRow);
+    }
+    state.isDirty = true;
+}
 
 function draw() {
 
@@ -57,8 +61,15 @@ function draw() {
 }
 
 function renderHUD() {
-    let hpBar = `[${ANSI.COLOR.RED + pad(Math.round(playerStats.hp), "❤️") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "❤️") + ANSI.COLOR_RESET} ]`
-    let cash = `$:${playerStats.cash.toFixed(2)}`;
+    let hpBar = `[${ANSI.COLOR.RED + pad(Math.floor(playerStats.hp), "♥") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "♥") + ANSI.COLOR_RESET}]`
+    let cash = `$:${playerStats.cash}`;
+
+    if (playerStats.hp <= 0) {
+        console.clear();
+        console.log(ANSI.COLOR.RED + "You died!\nGAME OVER" + ANSI.RESET);
+        process.exit();
+    }
+
     return `${hpBar}\n${cash}\n`;
 }
 
@@ -71,7 +82,21 @@ function pad(len, text) {
 }
 
 function nextLevel() {
-    state.eventText = "Loading the next level..."
+    state.currentLevel += 1;
+    if (state.currentLevel >= levels.length) {
+        victory();
+    } else {
+        rawLevel = levels[state.currentLevel];
+        loadLevel();
+    }
 }
+
+function victory() {
+    console.clear();
+    console.log("Congratulations, you won!");
+    process.exit();
+}
+
+loadLevel();
 
 export { draw, nextLevel };
