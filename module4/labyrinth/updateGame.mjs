@@ -6,7 +6,7 @@ import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, pla
 function update() {
 
     // Checks if the board just loaded in
-    if (playerPos.row == null) {
+    if (playerPos.row == null || NPCs.length == 0) {
 
         // Iterate over rows
         for (let row = 0; row < level.length; row++) {
@@ -21,8 +21,8 @@ function update() {
 
                 } else if (BAD_THINGS.includes(value)) { // If the cell contains an enemy, give them stats
 
-                    let hp = Math.round(Math.random() * 6) + 4;
-                    let attack = 0.7 + Math.random();
+                    let hp = rounder(Math.random() * 6) + 4;
+                    let attack = rounder(0.7 + Math.random());
                     let badThing = { hp, attack, row, col };
                     NPCs.push(badThing);
                 }
@@ -57,9 +57,9 @@ function update() {
         if (currentItem == LOOT) {
 
             if (Math.random() < 0.90) { // 90% chance to give cash
-                let loot = Number.randomBetween(3, 7);
+                let loot = rounder(Number.randomBetween(3, 7));
                 playerStats.cash += loot;
-                state.eventText = `Player gained ${loot.toFixed(2)}$`; 
+                state.eventText = `Player gained ${loot}$`; 
             } else { // 10% chance to give a random item
                 let item = POSSIBLE_PICKUPS.random();
                 playerStats.attack += item.value;
@@ -98,10 +98,10 @@ function update() {
         }
 
         // Calculate player damage dealt to enemy
-        let attack = ((Math.random() * MAX_ATTACK) * playerStats.attack).toFixed(2);
-        antagonist.hp -= attack; // Applies damage 
+        let playerAttack = rounder((Math.random() * MAX_ATTACK) * playerStats.attack);
+        antagonist.hp -= playerAttack; // Applies damage 
 
-        state.eventText = `Player dealt ${attack} points of damage`;
+        state.eventText = `Player dealt ${playerAttack} points of damage`;
 
         if (antagonist.hp <= 0) { // Checks if enemy dead
             state.eventText += ", and the bastard died" 
@@ -113,9 +113,9 @@ function update() {
             }
         } else {
             // If enemy is not dead, attack back 
-            attack = ((Math.random() * MAX_ATTACK) * antagonist.attack).toFixed(2);
-            playerStats.hp -= attack;
-            state.eventText += `\nBastard deals ${attack} back`;
+            let enemyAttack = rounder((Math.random() * MAX_ATTACK) * antagonist.attack);
+            playerStats.hp -= enemyAttack;
+            state.eventText += `\nBastard dealt ${enemyAttack} back`;
         }
 
         // Resets temporary position
@@ -128,7 +128,12 @@ function update() {
 
 // Get a random number in a specified range
 Number.randomBetween = function (min, max) {
-    return Math.random() * (max - min) + min;
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+// Round number
+function rounder(number) {
+    return Math.round(number * 10) / 10;
 }
 
 export { update };
