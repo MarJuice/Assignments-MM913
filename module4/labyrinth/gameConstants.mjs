@@ -1,6 +1,6 @@
 import ANSI from "./ANSI.mjs";
 
-const FPS = 250; // Game refresh rate
+const FPS = 50; // Game refresh rate
 let level = [];
 
 // Color palette for symbols
@@ -8,7 +8,7 @@ let pallet = {
     "H": ANSI.COLOR.RED,
     "$": ANSI.COLOR.YELLOW,
     "B": ANSI.COLOR.GREEN,
-    "X": ANSI.COLOR.BLUE
+    "∩": ANSI.COLOR.BLUE
 }
 
 // Game state variables
@@ -26,7 +26,7 @@ let playerPos = {
 const EMPTY = " ";
 const HERO = "H";
 const LOOT = "$";
-const DOOR = "X";
+const DOOR = "∩";
 const THINGS = [LOOT, EMPTY, DOOR];
 const BAD_THINGS = ["B"];
 const NPCs = [];
