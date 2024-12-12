@@ -1,11 +1,14 @@
 import KeyBoardManager from "./keyboardManager.mjs";
+import * as fs from "fs";
 import "./prototypes.mjs";
 import { nextLevel } from "./drawGame.mjs";
+import { startGame } from "./labyrinth.mjs";
+import ANSI from "./ANSI.mjs";
 import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, state } from "./gameConstants.mjs";
 
-function update() {
+async function update() {
 
-    // Checks if the board just loaded in
+    // Checks if the board just loaded in, or if all enemies are dead
     if (playerPos.row == null || NPCs.length == 0) {
 
         // Iterate over rows
@@ -59,11 +62,13 @@ function update() {
             if (Math.random() < 0.90) { // 90% chance to give cash
                 let loot = rounder(Number.randomBetween(3, 7));
                 playerStats.cash += loot;
-                state.eventText = `Player gained ${loot}$`; 
+                state.messageFrames = 3;
+                printEvent(state.eventText = `Player gained ${loot}$`);
             } else { // 10% chance to give a random item
                 let item = POSSIBLE_PICKUPS.random();
                 playerStats.attack += item.value;
-                state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${item.value}`;
+                state.messageFrames = 3;
+                printEvent(state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${item.value}`);
             }
         }
 
@@ -71,7 +76,8 @@ function update() {
             if (NPCs.length == 0) { // Only lets the player proceed if all enemies are dead
                 nextLevel();
             } else {
-                state.eventText = "The door is locked. Defeat all enemies first!";
+                state.messageFrames = 3;
+                printEvent(state.eventText = "The door is locked. Defeat all enemies first!");
                 state.isDirty = true; // Makes sure the message is sent, the player doesn't move and won't show the eventMessage otherwise
                 return; // Prevent the player from moving onto the door
             }
@@ -101,10 +107,12 @@ function update() {
         let playerAttack = rounder((Math.random() * MAX_ATTACK) * playerStats.attack);
         antagonist.hp -= playerAttack; // Applies damage 
 
-        state.eventText = `Player dealt ${playerAttack} points of damage`;
+        state.messageFrames = 3;
+        printEvent(state.eventText = `Player dealt ${playerAttack} points of damage`);
 
         if (antagonist.hp <= 0) { // Checks if enemy dead
-            state.eventText += ", and the bastard died" 
+            state.messageFrames = 3;
+            printEvent(state.eventText += ", and the bastard died");
             level[tRow][tCol] = EMPTY; // Clears the cell of dead enemy
             for (let i = 0; i < NPCs.length; i++) {
                 if (NPCs[i] == antagonist) {
@@ -114,8 +122,9 @@ function update() {
         } else {
             // If enemy is not dead, attack back 
             let enemyAttack = rounder((Math.random() * MAX_ATTACK) * antagonist.attack);
-            playerStats.hp -= enemyAttack;
-            state.eventText += `\nBastard dealt ${enemyAttack} back`;
+            playerStats.hp -= enemyAttack.toFixed(1);
+            state.messageFrames = 3;
+            printEvent(state.eventText += `\nBastard dealt ${enemyAttack} back`);
         }
 
         // Resets temporary position
@@ -124,6 +133,50 @@ function update() {
 
         state.isDirty = true;
     }
+}
+ 
+// Display event messages for a few frames
+function printEvent() {
+    console.log(state.eventText);
+    if (state.messageFrames == 0) {
+        state.eventText = "";
+    }
+    
+}
+
+// Save game state and write it to saveFile.json
+function saveGame() {
+    console.log(ANSI.COLOR.GREEN + "Game saved!" + ANSI.RESET);
+    const gameState = {
+        playerStats,
+        playerPos,
+        state: { currentLevel: state.currentLevel },
+        level,
+        NPCs
+    };
+
+    fs.writeFileSync("saveFile.json", JSON.stringify(gameState, null, 4));
+
+}
+
+// Load the game state from the saved file
+function loadGame() {
+    const gameData = JSON.parse(fs.readFileSync("saveFile.json"));
+    if (gameData == null) {
+        state.messageFrames = 3;
+        return state.eventText = "No save file";
+    }
+    Object.assign(playerStats, gameData.playerStats);
+    Object.assign(playerPos, gameData.playerPos);
+    Object.assign(state, gameData.state);
+    Object.assign(level, gameData.level);
+
+
+}
+
+// Clear the save file if the player dies
+function gameOver() {
+    fs.writeFileSync("saveFile.json", JSON.stringify(null));
 }
 
 // Get a random number in a specified range
@@ -136,4 +189,4 @@ function rounder(number) {
     return Math.round(number * 10) / 10;
 }
 
-export { update };
+export { update, saveGame, gameOver, loadGame };
