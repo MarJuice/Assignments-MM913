@@ -1,10 +1,12 @@
 import { level1, level2 } from "./levels.mjs";
 import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state } from "./gameConstants.mjs";
+import { splash } from "./menus.mjs";
+import { gameOver } from "./updateGame.mjs";
 import ANSI from "./ANSI.mjs";
 
 // Load the level
 let levels = [level1, level2];
-let rawLevel = levels[0]; 
+let rawLevel = levels[state.currentLevel]; 
 function loadLevel() {
     level.length = 0 // Clear current level
     let tempLevel = rawLevel.split("\n");
@@ -17,7 +19,6 @@ function loadLevel() {
 }
 
 function draw() {
-
     // Only draw if the player does something
     if (state.isDirty == false) {
         return;
@@ -53,9 +54,12 @@ function draw() {
     }
 
     console.log(rendering);
-    if (state.eventText != "") { // Prints event text whenever it's added
-        console.log(state.eventText);
-        state.eventText = "";
+
+    if (state.messageFrames > 0) {
+        state.messageFrames--;
+        if (state.eventText != "") { // Prints event text whenever it's added
+            console.log(state.eventText);
+        }
     }
 }
 
@@ -65,8 +69,9 @@ function renderHUD() {
     let cash = `$:${playerStats.cash}`;
 
     if (playerStats.hp <= 0) {
-        console.clear();
-        console.log(ANSI.COLOR.RED + "You died!\nGAME OVER" + ANSI.RESET);
+        console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
+        console.log(ANSI.COLOR.RED + splash.gameOver + ANSI.RESET);
+        gameOver();
         process.exit();
     }
 
@@ -94,7 +99,7 @@ function nextLevel() {
 
 // If the player beats the last level
 function victory() {
-    console.clear();
+    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
     console.log("Congratulations, you won!");
     process.exit();
 }
