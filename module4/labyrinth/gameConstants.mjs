@@ -10,6 +10,8 @@ let pallet = {
     "B": ANSI.COLOR.GREEN,
     "∩": ANSI.COLOR.BLUE,
     "+": ANSI.COLOR.GREEN,
+    ".": ANSI.COLOR.RED + ANSI.BACKGROUND_COLOR.RED, // Lava
+    "ö": ANSI.COLOR.YELLOW
 }
 
 // Game state variables
@@ -30,20 +32,23 @@ const HERO = "H";
 const LOOT = "$";
 const DOOR = "∩";
 const HEAL = "+";
-const THINGS = [LOOT, EMPTY, DOOR, HEAL];
+const LAVA = ".";
+const TELEPORTER = "x";
+const THINGS = [LOOT, EMPTY, DOOR, HEAL, TELEPORTER];
 const BAD_THINGS = ["B"];
+const ENVIRONMENT = [".", "ö"];
 const NPCs = [];
 const POSSIBLE_PICKUPS = [
     { name: "Sword", attribute: "attack", value: 5 },
     { name: "Spear", attribute: "attack", value: 3 },
     { name: "Dagger", attribute: "attack", get value() { return Math.floor(Math.random() * 3) + 1 }}, // Random value between 1 and 3 each time a dagger is found
-    { name: "Poison", attribute: "health", get value() { return Math.floor(Math.random() * 6) + 2}} // Deals between 2 and 6 damage to the player
+    { name: "Poison", attribute: "health", get value() { return Math.floor(Math.random() * 6) + 2}} // Deals between 2 and 6 damage to the player each time
 ];
 
 const HP_MAX = 10;
 const MAX_ATTACK = 2;
 
-const playerStats = { hp: 10, cash: 0, attack: 1.1 };
+const playerStats = { hp: 10, exp: 0, attack: 1.1 };
 
 export {
     BAD_THINGS,
@@ -62,5 +67,8 @@ export {
     pallet,
     playerPos,
     state,
-    playerStats
+    playerStats,
+    LAVA,
+    ENVIRONMENT,
+    TELEPORTER
 };
