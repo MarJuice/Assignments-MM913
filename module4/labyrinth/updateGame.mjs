@@ -2,9 +2,8 @@ import KeyBoardManager from "./keyboardManager.mjs";
 import * as fs from "fs";
 import "./prototypes.mjs";
 import { nextLevel } from "./drawGame.mjs";
-import { startGame } from "./labyrinth.mjs";
 import ANSI from "./ANSI.mjs";
-import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, state } from "./gameConstants.mjs";
+import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, HEAL, state } from "./gameConstants.mjs";
 
 async function update() {
 
@@ -66,9 +65,18 @@ async function update() {
                 printEvent(state.eventText = `Player gained ${loot}$`);
             } else { // 10% chance to give a random item
                 let item = POSSIBLE_PICKUPS.random();
-                playerStats.attack += item.value;
-                state.messageFrames = 3;
-                printEvent(state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${item.value}`);
+                if (item.name == "Poison") {
+                    let damage = item.value; // Store getter value in variable to avoid different values being used
+                    playerStats.hp -= damage; // Remove health from player if they get poison
+                    state.messageFrames = 3;
+                    printEvent(state.eventText = `Player found ${item.name}, ${damage} ${item.attribute} lost`);
+                } else {
+                    let damage = item.value;
+                    playerStats.attack += damage; // Add item stats to player stats
+                    state.messageFrames = 3;
+                    printEvent(state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${damage}`);
+                }
+
             }
         }
 
@@ -81,6 +89,14 @@ async function update() {
                 state.isDirty = true; // Makes sure the message is sent, the player doesn't move and won't show the eventMessage otherwise
                 return; // Prevent the player from moving onto the door
             }
+        } else if (currentItem == HEAL) {
+            let heal = rounder(Number.randomBetween(2, 4));
+            playerStats.hp += heal;
+            if (playerStats.hp > 10) {
+                playerStats.hp = 10;
+            }
+            state.messageFrames = 3;
+            printEvent(state.eventText = `Player gained ${heal} health`)
         }
 
         level[playerPos.row][playerPos.col] = EMPTY; // Remove item after interacting
@@ -164,7 +180,7 @@ function loadGame() {
     const gameData = JSON.parse(fs.readFileSync("saveFile.json"));
     if (gameData == null) {
         state.messageFrames = 3;
-        return state.eventText = "No save file";
+        return state.eventText = ANSI.COLOR.RED + "No save file exists" + ANSI.RESET;
     }
     Object.assign(playerStats, gameData.playerStats);
     Object.assign(playerPos, gameData.playerPos);
@@ -172,6 +188,14 @@ function loadGame() {
     Object.assign(level, gameData.level);
 
 
+}
+
+// If the player beats the last level, they win. Clear save file
+function victory() {
+    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
+    console.log("Congratulations, you escaped!");
+    fs.writeFileSync("saveFile.json", JSON.stringify(null));
+    process.exit();
 }
 
 // Clear the save file if the player dies
@@ -189,4 +213,4 @@ function rounder(number) {
     return Math.round(number * 10) / 10;
 }
 
-export { update, saveGame, gameOver, loadGame };
+export { update, saveGame, loadGame, victory, gameOver };

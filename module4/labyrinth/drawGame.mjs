@@ -1,7 +1,7 @@
 import { level1, level2 } from "./levels.mjs";
 import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state } from "./gameConstants.mjs";
 import { splash } from "./menus.mjs";
-import { gameOver } from "./updateGame.mjs";
+import { gameOver, victory } from "./updateGame.mjs";
 import ANSI from "./ANSI.mjs";
 
 // Load the level
@@ -95,13 +95,6 @@ function nextLevel() {
         rawLevel = levels[state.currentLevel];
         loadLevel();
     }
-}
-
-// If the player beats the last level
-function victory() {
-    console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-    console.log("Congratulations, you won!");
-    process.exit();
 }
 
 loadLevel();
