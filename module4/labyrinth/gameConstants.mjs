@@ -15,7 +15,8 @@ let pallet = {
 const state = {
     isDirty: true, // Has to be object to change state between files
     eventText: "",
-    currentLevel: 0
+    currentLevel: 0,
+    messageFrames: 0
 }
 let playerPos = { 
     row: null, 
