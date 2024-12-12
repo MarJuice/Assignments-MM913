@@ -1,11 +1,11 @@
-import { level1, level2 } from "./levels.mjs";
-import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state } from "./gameConstants.mjs";
+import { level1, level2, level3 } from "./levels.mjs";
+import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state, MAX_ATTACK } from "./gameConstants.mjs";
 import { splash } from "./menus.mjs";
 import { gameOver, victory } from "./updateGame.mjs";
 import ANSI from "./ANSI.mjs";
 
 // Load the level
-let levels = [level1, level2];
+let levels = [level1, level2, level3];
 let rawLevel = levels[state.currentLevel]; 
 function loadLevel() {
     level.length = 0 // Clear current level
@@ -66,7 +66,11 @@ function draw() {
 // Creates HUD elements
 function renderHUD() {
     let hpBar = `[${ANSI.COLOR.RED + pad(Math.floor(playerStats.hp), "♥") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "♥") + ANSI.COLOR_RESET}]`
-    let cash = `$:${playerStats.cash}`;
+    let levelCalculation = Math.floor(playerStats.exp/10);
+    let levelProgress = (playerStats.exp%10)*10;
+
+    let playerLevel = `lv ${(levelCalculation)}✨:`;
+    let damageStat = `${playerStats.attack+levelCalculation} ⚔️: (${playerStats.attack*0+levelCalculation} - ${(playerStats.attack*MAX_ATTACK)+levelCalculation}) (+${levelCalculation}✨)`
 
     if (playerStats.hp <= 0) {
         console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
@@ -75,7 +79,7 @@ function renderHUD() {
         process.exit();
     }
 
-    return `${hpBar}\n${cash}\n`;
+    return `${hpBar}\n${playerLevel} (${levelProgress}%)\n${damageStat}`;
 }
 
 function pad(len, text) {
