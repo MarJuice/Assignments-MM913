@@ -1,4 +1,5 @@
-import * as readline from "node:readline"
+import * as readline from "node:readline";
+import { saveGame } from "./updateGame.mjs";
 
 readline.emitKeypressEvents(process.stdin);
 if (process.stdin.isTTY) {
@@ -8,6 +9,7 @@ if (process.stdin.isTTY) {
 process.stdin.on("keypress", (str, key) => {
 
     if (key.name == KEY_ID.escape) {
+        saveGame();
         process.exit();
     }
 
@@ -63,6 +65,5 @@ const KeyBoardManager = {
     }
 
 }
-
 
 export default KeyBoardManager;
