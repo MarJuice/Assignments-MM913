@@ -154,21 +154,21 @@ async function update() {
                 state.isDirty = true;
             }
         } else if (currentItem == RETURN) {
+            savePreviousLevel();
             previousLevel();
             state.isDirty = true;
         } else if (currentItem == HIDDEN_DOOR) {
             victory();
         } else if (currentItem == NEUTRAL) {
             if (state.currentLevel == 1) {
-                printEvent(state.eventText = ANSI.COLOR.BLUE + "Thank you for freeing me, stranger..." + ANSI.COLOR_RESET);
-                printEvent(state.eventText = ANSI.COLOR.BLUE + "I'll make it out of here on my own, but please, help me find my brother!" + ANSI.COLOR_RESET);
+                printEvent(state.eventText = ANSI.COLOR.BLUE + "Thank you for freeing me, stranger...\nI'll make it out of here on my own, but please, help me find my brother!" + ANSI.COLOR_RESET);
                 state.savedPrisoners = 1;
             } else if (state.currentLevel == 2) {
                 if (state.savedPrisoners >= 1) {
-                    printEvent(state.eventText = ANSI.COLOR.BLUE + "- I can't believe it, is that you, brother?! Thank you for saving us, I found a secret escape behind this wall, let's go!" + ANSI.COLOR_RESET);
+                    printEvent(state.eventText = ANSI.COLOR.BLUE + "I can't believe it, is that you, brother?! Thank you for saving us, I found a secret escape behind this wall, let's go!" + ANSI.COLOR_RESET);
                     state.savedPrisoners = 2;
                 } else {
-                    printEvent(state.eventText = ANSI.COLOR.BLUE + "- Hey there, have you seen my brother? Let me know if you find him..." + ANSI.COLOR_RESET);
+                    printEvent(state.eventText = ANSI.COLOR.BLUE + "Hey there, have you seen my brother? Let me know if you find him..." + ANSI.COLOR_RESET);
                 }
             }
         }
