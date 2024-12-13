@@ -9,8 +9,8 @@ let pallet = {
     "$": ANSI.COLOR.YELLOW,
     "B": ANSI.COLOR.GREEN,
     "∩": ANSI.COLOR.BLUE,
+    "u": ANSI.COLOR.BLUE,
     "+": ANSI.COLOR.GREEN,
-    ".": ANSI.COLOR.RED + ANSI.BACKGROUND_COLOR.RED, // Lava
     "ö": ANSI.COLOR.YELLOW
 }
 
@@ -19,7 +19,9 @@ const state = {
     isDirty: true, // Has to be object to change state between files
     eventText: "",
     currentLevel: 0,
-    messageFrames: 0
+    messageFrames: 0,
+    levelsCleared: 0,
+    savedPrisoners: 0
 }
 let playerPos = { 
     row: null, 
@@ -31,12 +33,14 @@ const EMPTY = " ";
 const HERO = "H";
 const LOOT = "$";
 const DOOR = "∩";
+const RETURN = "u";
 const HEAL = "+";
-const LAVA = ".";
+const NEUTRAL = "ö";
 const TELEPORTER = "x";
-const THINGS = [LOOT, EMPTY, DOOR, HEAL, TELEPORTER];
+const HIDDEN_DOOR = "-";
+const THINGS = [LOOT, EMPTY, HEAL];
 const BAD_THINGS = ["B"];
-const ENVIRONMENT = [".", "ö"];
+const ENVIRONMENT = [TELEPORTER, DOOR, RETURN, HIDDEN_DOOR, NEUTRAL];
 const NPCs = [];
 const POSSIBLE_PICKUPS = [
     { name: "Sword", attribute: "attack", value: 5 },
@@ -68,7 +72,9 @@ export {
     playerPos,
     state,
     playerStats,
-    LAVA,
     ENVIRONMENT,
-    TELEPORTER
+    TELEPORTER,
+    NEUTRAL,
+    RETURN,
+    HIDDEN_DOOR,
 };
