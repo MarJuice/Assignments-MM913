@@ -1,8 +1,9 @@
 import { level1, level2, level3 } from "./levels.mjs";
-import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state, MAX_ATTACK } from "./gameConstants.mjs";
+import { level, BAD_THINGS, HP_MAX, pallet, playerStats, state, MAX_ATTACK, NPCs} from "./gameConstants.mjs";
 import { splash } from "./menus.mjs";
 import { gameOver, victory } from "./updateGame.mjs";
 import ANSI from "./ANSI.mjs";
+import * as fs from "fs";
 
 // Load the level
 let levels = [level1, level2, level3];
@@ -65,12 +66,12 @@ function draw() {
 
 // Creates HUD elements
 function renderHUD() {
-    let hpBar = `[${ANSI.COLOR.RED + pad(Math.floor(playerStats.hp), "♥") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(HP_MAX - playerStats.hp, "♥") + ANSI.COLOR_RESET}]`
+    let hpBar = `[${ANSI.COLOR.RED + pad(Math.round(playerStats.hp), "♥") + ANSI.COLOR_RESET}${ANSI.COLOR.BLUE + pad(Math.round(HP_MAX - playerStats.hp), "♥") + ANSI.COLOR_RESET}]`
     let levelCalculation = Math.floor(playerStats.exp/10);
     let levelProgress = (playerStats.exp%10)*10;
 
     let playerLevel = `lv ${(levelCalculation)}✨:`;
-    let damageStat = `${playerStats.attack+levelCalculation} ⚔️: (${playerStats.attack*0+levelCalculation} - ${(playerStats.attack*MAX_ATTACK)+levelCalculation}) (+${levelCalculation}✨)`
+    let damageStat = `${playerStats.attack+levelCalculation} ⚔️: (${levelCalculation} - ${(playerStats.attack*MAX_ATTACK)+levelCalculation}) (+${levelCalculation}✨)`
 
     if (playerStats.hp <= 0) {
         console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
@@ -101,6 +102,14 @@ function nextLevel() {
     }
 }
 
+function previousLevel() {
+    state.currentLevel -= 1;
+    const previousLevelData = JSON.parse(fs.readFileSync("saveFile.json"));
+    rawLevel = previousLevelData;
+
+    Object.assign(level, previousLevelData.level);
+}
+
 loadLevel();
 
-export { draw, nextLevel };
+export { draw, nextLevel, previousLevel };
