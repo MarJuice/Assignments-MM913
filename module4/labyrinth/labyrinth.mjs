@@ -1,10 +1,10 @@
-import ANSI from "./ANSI.mjs";
-import { FPS } from "./gameConstants.mjs";
-import { update } from "./updateGame.mjs";
-import { draw } from "./drawGame.mjs";
-import { splashScreen, startMenu } from "./menus.mjs";
 import * as readlinePromises from 'node:readline/promises';
 const rl = readlinePromises.createInterface({ input: process.stdin, output: process.stdout });
+import ANSI from "./ANSI.mjs";
+import { FPS } from "./gameConstants.mjs";
+import { draw } from "./drawGame.mjs";
+import { splashScreen, startMenu } from "./menus.mjs";
+import { update } from "./updateGame.mjs";
 
 // Game loop, update the game state then draw it
 function gameLoop() {
