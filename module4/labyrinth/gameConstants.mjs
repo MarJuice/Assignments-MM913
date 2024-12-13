@@ -1,7 +1,7 @@
 import ANSI from "./ANSI.mjs";
 
 const FPS = 50; // Game refresh rate
-let level = [];
+let level = []; // Stored level
 
 // Color palette for symbols
 let pallet = {
@@ -58,23 +58,23 @@ export {
     BAD_THINGS,
     DOOR,
     EMPTY,
+    ENVIRONMENT,
     FPS,
-    HERO,
     HEAL,
+    HERO,
+    HIDDEN_DOOR,
     HP_MAX,
     LOOT,
     MAX_ATTACK,
+    NEUTRAL,
     NPCs,
     POSSIBLE_PICKUPS,
+    RETURN,
+    TELEPORTER,
     THINGS,
     level,
     pallet,
     playerPos,
-    state,
     playerStats,
-    ENVIRONMENT,
-    TELEPORTER,
-    NEUTRAL,
-    RETURN,
-    HIDDEN_DOOR,
+    state,
 };
