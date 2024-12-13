@@ -1,9 +1,9 @@
 import KeyBoardManager from "./keyboardManager.mjs";
 import * as fs from "fs";
 import "./prototypes.mjs";
-import { nextLevel } from "./drawGame.mjs";
+import { nextLevel, previousLevel } from "./drawGame.mjs";
 import ANSI from "./ANSI.mjs";
-import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, HEAL, state } from "./gameConstants.mjs";
+import { level, playerPos, NPCs, THINGS, BAD_THINGS, DOOR, POSSIBLE_PICKUPS, playerStats, MAX_ATTACK, HERO, LOOT, EMPTY, HEAL, state, ENVIRONMENT, NEUTRAL, TELEPORTER, RETURN, HIDDEN_DOOR } from "./gameConstants.mjs";
 
 async function update() {
 
@@ -33,7 +33,6 @@ async function update() {
         }
     }
 
-
     let drow = 0; // Vertical movement variable
     let dcol = 0; // Horizontal movement variable 
 
@@ -58,7 +57,6 @@ async function update() {
 
         let currentItem = level[tRow][tCol];
         if (currentItem == LOOT) {
-
             if (Math.random() < 0.90) { // 90% chance to give experience points
                 let loot = Number.randomBetween(3, 7);
                 playerStats.exp += loot;
@@ -74,17 +72,6 @@ async function update() {
                     playerStats.attack += damage; // Add item stats to player stats
                     printEvent(state.eventText = `Player found a ${item.name}, ${item.attribute} is changed by ${damage}`);
                 }
-
-            }
-        }
-
-        if (currentItem == DOOR) {
-            if (NPCs.length == 0) { // Only lets the player proceed if all enemies are dead
-                nextLevel();
-            } else {
-                printEvent(state.eventText = "The door is locked. Defeat all enemies first!");
-                state.isDirty = true; // Makes sure the message is sent, the player doesn't move and won't show the eventMessage otherwise
-                return; // Prevent the player from moving onto the door
             }
         } else if (currentItem == HEAL) {
             let heal = Number.randomBetween(2, 4);
@@ -143,6 +130,48 @@ async function update() {
         tCol = playerPos.col;
 
         state.isDirty = true;
+    } else if (ENVIRONMENT.includes(level[tRow][tCol])) {
+        let currentItem = level[tRow][tCol];
+        if (currentItem == DOOR) {
+            if (NPCs.length == 0) { // Only lets the player proceed if all enemies are dead
+                state.levelsCleared += 1.1;
+                savePreviousLevel();
+                nextLevel();
+            } else if (state.levelsCleared > state.currentLevel){
+                savePreviousLevel();
+                nextLevel();
+            } else {
+                printEvent(state.eventText = "The door is locked. Defeat all enemies first!");
+                state.isDirty = true; // Makes sure the message is sent, the player doesn't move and won't show the eventMessage otherwise
+                return; // Prevent the player from moving onto the door
+            }
+        } else if (currentItem == TELEPORTER) {
+            let destination = oppositeTeleporter(tRow, tCol)
+            if (destination) {
+                level[playerPos.row][playerPos.col] = EMPTY;
+                playerPos.row = destination.row + 1;
+                playerPos.col = destination.col;
+                state.isDirty = true;
+            }
+        } else if (currentItem == RETURN) {
+            previousLevel();
+            state.isDirty = true;
+        } else if (currentItem == HIDDEN_DOOR) {
+            victory();
+        } else if (currentItem == NEUTRAL) {
+            if (state.currentLevel == 1) {
+                printEvent(state.eventText = ANSI.COLOR.BLUE + "Thank you for freeing me, stranger..." + ANSI.COLOR_RESET);
+                printEvent(state.eventText = ANSI.COLOR.BLUE + "I'll make it out of here on my own, but please, help me find my brother!" + ANSI.COLOR_RESET);
+                state.savedPrisoners = 1;
+            } else if (state.currentLevel == 2) {
+                if (state.savedPrisoners >= 1) {
+                    printEvent(state.eventText = ANSI.COLOR.BLUE + "- I can't believe it, is that you, brother?! Thank you for saving us, I found a secret escape behind this wall, let's go!" + ANSI.COLOR_RESET);
+                    state.savedPrisoners = 2;
+                } else {
+                    printEvent(state.eventText = ANSI.COLOR.BLUE + "- Hey there, have you seen my brother? Let me know if you find him..." + ANSI.COLOR_RESET);
+                }
+            }
+        }
     }
 }
  
@@ -154,6 +183,16 @@ function printEvent() {
         state.eventText = "";
     }
     
+}
+
+function oppositeTeleporter(row, col) {
+    for (let r = 0; r < level.length; r++) {
+        for (let c = 0; c < level[r].length; c++) {
+            if (level[r][c] == TELEPORTER && (r != row || c != col)) {
+                return { row: r, col: c };
+            }
+        }
+    }
 }
 
 // Save game state and write it to saveFile.json
@@ -168,7 +207,6 @@ function saveGame() {
     };
 
     fs.writeFileSync("saveFile.json", JSON.stringify(gameState, null, 4));
-
 }
 
 // Load the game state from the saved file
@@ -183,10 +221,21 @@ function loadGame() {
     Object.assign(level, gameData.level);
 }
 
+function savePreviousLevel() {
+    const previousLevel = { level };
+
+    fs.writeFileSync("saveFile.json", JSON.stringify(previousLevel, null, 4));
+}
+
 // If the player beats the last level, they win. Clear save file
 function victory() {
     console.log(ANSI.CLEAR_SCREEN, ANSI.CURSOR_HOME);
-    console.log("Congratulations, you escaped!");
+    if (state.savedPrisoners = 2) {
+        console.log("Well done, you managed to escape while saving the imprisoned brothers! ");
+    } else {
+        console.log("Congratulations, you escaped!");
+    }
+
     fs.writeFileSync("saveFile.json", JSON.stringify(null));
     process.exit();
 }
