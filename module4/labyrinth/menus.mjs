@@ -2,6 +2,7 @@ import KeyBoardManager from "./keyboardManager.mjs";
 import ANSI from "./ANSI.mjs";
 import { FPS } from "./gameConstants.mjs";
 import { loadGame } from "./updateGame.mjs";
+import * as fs from "fs";
 
 // Show the splash screen at the start of the game
 async function splashScreen() {
@@ -42,6 +43,7 @@ async function startMenu() {
         }
         if (KeyBoardManager.isEnterPressed()) { // Enter
             if (selectedIndex == 0) { // Start the game
+                fs.writeFileSync("saveFile.json", JSON.stringify(null));
                 break;
             } else if (selectedIndex == 1) { // Load save file
                 loadGame();
@@ -69,6 +71,9 @@ const splash = {
 ║   ▐█▌▐▌▐█ ▪▐▌██▄▪▐█ ▐█▀·.▐█•█▌▐█▌██▐█▌ ▐█▌·██▌▐▀   ║
 ║   .▀▀▀  ▀  ▀ ·▀▀▀▀   ▀ • .▀  ▀▀▀▀▀▀ █▪ ▀▀▀ ▀▀▀ ·   ║
 ╚════════════════════════════════════════════════════╝
+
+[ ← ↑ → ↓ ] Move   [ENTER] Confirm   [esc] Exit & save
+
 `,
     gameOver:String.raw`
 ╔═════════════════════════════════════════════════════════╗
