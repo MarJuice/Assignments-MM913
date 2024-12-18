@@ -1,5 +1,5 @@
-const dictionary = {
-    no:{
+const dictionary = { // Game displays in language selected in the start menu
+    no:{ // Norwegian dictionary
         wrongGuesses: "Feil gjetninger: ",
         guessPrompt: "Gjett en bokstav eller ord",
         winCelebration: "Gratulerer, du gjettet ordet",
@@ -12,7 +12,7 @@ const dictionary = {
         statisticsGuesses: "Total antall gjetninger",
         statisticsTime: "Tid brukt",
     },
-    en:{
+    en:{ // English dictionary
         wrongGuesses: "Wrong guesses: ",
         guessPrompt: "Guess a letter or word",
         winCelebration: "Congratulations, you guessed the word",
