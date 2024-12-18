@@ -10,20 +10,22 @@ import ANSI from "./ANSI.mjs"
 import { get } from "node:http";
 import { start } from "node:repl";
 
-let board = [
+let board = [ // Empty board state, 0 means the cell is empty
     [0, 0, 0],
     [0, 0, 0],
     [0, 0, 0],
 ];
 
 //#region Game logic
+// Player inputs are entered into the board array
+const player1 = 1; // Value of 1 = X
+const player2 = -1; // Value of -1 = O
 
-const player1 = 1;
-const player2 = -1;
-
+// Selected player names
 let player1Label = null;
 let player2Label = null;
 
+// Initialize variables
 let gameResult = "";
 let player = player1;
 let isGameOver = false;
@@ -49,24 +51,24 @@ async function startGame() {
 
         // Get player inputs after being validated until board is filled
         do {
-            const input = await inputValidation();
-            row = input.row;
-            col = input.col;
-        } while (board[row][col] != 0)
+            const input = await inputValidation(); // Check that the input is valid
+            row = input.row; // Assign the row to the input provided
+            col = input.col; // Assign the column to the input provided
+        } while (board[row][col] != 0) // Repeat until all squares of the board are filled
 
         // 1 or -1 depending on who's turn it is
         board[row][col] = player;
 
-        let winner = checkIfWin(board);
+        let winner = checkIfWin(board); // Check if anyone has 3 in a row
         if (winner != 0) {
             isGameOver = true;
             gameResult = `The winner is ${playerName(winner)}!`;
-        } else if (checkIfDraw(board)) {
+        } else if (checkIfDraw(board)) { // If noone has 3 in a row, declare a draw
             gameResult = "It's a draw";
             isGameOver = true;
         }
        
-        changeActivePl();
+        changeActivePl(); // Change the player value between 1 and -1 each turn
 
     }
 
@@ -85,7 +87,7 @@ function checkIfWin(board) {
             sum += board[row][col];
         }
 
-        if (Math.abs(sum) == 3) {
+        if (Math.abs(sum) == 3) { // 3 in a row
             return board[row][0];
         }
     }
@@ -97,18 +99,18 @@ function checkIfWin(board) {
             sum += board[row][col];
         }
 
-        if (Math.abs(sum) == 3) {
+        if (Math.abs(sum) == 3) { // 3 in a row
             return board[0][col];
         }
     }
 
     // Check diagonals
-    let diag1 = board[0][0] + board[1][1] + board[2][2];
-    let diag2 = board[0][2] + board[1][1] + board[2][0];
-    if (Math.abs(diag1) == 3) {
+    let diag1 = board[0][0] + board[1][1] + board[2][2]; // 3 in a row diagonal top left to bottom right
+    let diag2 = board[0][2] + board[1][1] + board[2][0]; // 3 in a row diagonal top right to bottom left
+    if (Math.abs(diag1) == 3) { // 3 in a row
         return board[1][1];
     }
-    if (Math.abs(diag2) == 3) {
+    if (Math.abs(diag2) == 3) { // 3 in a row
         return board[1][1];
     }
 
@@ -132,15 +134,15 @@ function checkIfDraw(board) {
 
 // Render the board
 function showBoard(board) {
-    // New array to display properly rather than raw data
+    // New array to display properly rather than raw data (0/1/-1)
     let boardSquares = [];
 
+    // Check each square
     for (let row = 0; row < 3; row++) {
         for (let col = 0; col < 3; col++) {
             let square = board[row][col];
 
-            // Empty squares are blank instead of 0
-            if (square == 0) {
+            if (square == 0) { // Empty squares are blank instead of 0
                 boardSquares.push(" ");
             } else if (square == 1) { // Player 1 markers are changed with X
                 boardSquares.push(ANSI.COLOR.BLUE+"X"+ANSI.RESET);
@@ -185,19 +187,19 @@ async function inputValidation() {
         let pos = await rl.question("Place your marker (row,col): ");
 
         // First check if player wants to restart or quit
-        if (pos.toLowerCase() == "r") {
+        if (pos.toLowerCase() == "r") { // Restart the game
             console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET);
             setTimeout(resetGame, 1000);
-        } else if (pos.toLowerCase() == "q") {
+        } else if (pos.toLowerCase() == "q") { // Quit the game
             validInput = true;
             console.clear();
             console.log("Thanks for playing!");
             process.exit();
         } else { // Otherwise, check if input is valid (number 1-3)
 
-            [row, col] = pos.split(",");
+            [row, col] = pos.split(","); // Separate input row and column by comma (row,col)
            
-            if (!isNaN(row) && !isNaN(col) && row >= 1 && row <= 3 && col >= 1 && col <= 3) {
+            if (!isNaN(row) && !isNaN(col) && row >= 1 && row <= 3 && col >= 1 && col <= 3) { // Makes sure player inputs a number between 1 and 3
                 validInput = true;
                 row -= 1;
                 col -= 1;
@@ -205,7 +207,7 @@ async function inputValidation() {
         }
     }
 
-    return { row, col };
+    return { row, col }; // Return the validated input
 }
 
 // Reset game state
@@ -218,7 +220,7 @@ function resetGame() {
     isGameOver = false;
     gameResult = "";
     player = player1;
-    startGame();
+    startGame(); // Start the new game
 }
 
 // Print results
@@ -233,18 +235,18 @@ function displayResults() {
 async function gameOver() {
 
     displayResults();
-    let answer = await rl.question("");
+    let answer = await rl.question(""); // Show options: restart or quit
 
-    if (answer.toLowerCase() == "r") {
-        console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET);
-        setTimeout(resetGame, 1000);
-    } else if (answer.toLowerCase() == "q") {
+    if (answer.toLowerCase() == "r") { // Restart game
+        console.log(ANSI.COLOR.RED+"\nRestarting..."+ANSI.RESET); 
+        setTimeout(resetGame, 1000); // Show message for 1 second
+    } else if (answer.toLowerCase() == "q") { // Quit game
         console.clear();
         console.log("Thanks for playing!");
         process.exit();
     } else { 
         console.clear();
-        gameOver();
+        gameOver(); // Reprompt
     }
 }
 
