@@ -23,21 +23,21 @@ await languageSelection();
 
 async function languageSelection() {
     console.clear();
-    let selectedLanguage = await rl.question(splash);
+    let selectedLanguage = await rl.question(splash); // Display splash screen
 
-    if (selectedLanguage.toLowerCase() == "no") {
+    if (selectedLanguage.toLowerCase() == "no") { // Norwegian language selection
         language = dictionary.no;
-    } else if (selectedLanguage.toLowerCase() == "en") {
+    } else if (selectedLanguage.toLowerCase() == "en") { // English language selection
         language = dictionary.en;
     } else {
         language = null;
         console.clear();
-        await languageSelection();
+        await languageSelection(); // Prompt again until valid input
     }
     
-    wordList = getWordsFromFile();
+    wordList = getWordsFromFile(); // Get a random word from the file corresponding to language selected
     
-    await startMenu();
+    await startMenu(); // Open start menu
     
 }
 
@@ -45,18 +45,18 @@ async function languageSelection() {
 function getWordsFromFile() {
     let fileName = '';
 
-    if (language == dictionary.en) {
+    if (language == dictionary.en) { // If english is chosen, get a word from the english word file
         fileName = 'words.txt';
-    } else if (language == dictionary.no) {
+    } else if (language == dictionary.no) { // If norwegian is chosen, get a word from the norwegian word file
         fileName = 'ord.txt';
     }
 
 
-    const data = fs.readFileSync(`./lib/${fileName}`, 'utf8');
-    const words = data.split('\n');
+    const data = fs.readFileSync(`./lib/${fileName}`, 'utf8'); // File path
+    const words = data.split('\n'); // Each word is separated by line break
 
     for (let i = 0; i < words.length; i++) {
-        words[i] = words[i].trim();
+        words[i] = words[i].trim(); // Assigns each letter to index number
     }
 
     return words;
@@ -69,17 +69,17 @@ async function startMenu() {
         console.clear();
         print(titleScreen, RED);
         let menuChoice = await rl.question(language.menuOptions);
-        if (menuChoice == 1) {
+        if (menuChoice == 1) { // Start the game
             await game();
-        } else if (menuChoice == 2) {
+        } else if (menuChoice == 2) { // Change language
             language = null;
             await languageSelection();
-        } else if (menuChoice == 3) {
+        } else if (menuChoice == 3) { // Exit the game
             print(language.exitMessage);
             process.exit();
         } else {
             menuChoice = null;
-            await startMenu();
+            await startMenu(); // Repeat until the player gives valid input
         }
     } while (menuChoice = null);
 } 
@@ -118,7 +118,7 @@ async function game() {
             continue;
         }
 
-        guessedLetters.push(guess);
+        guessedLetters.push(guess); // Add the guess to the list of guesses
         
         // Check if word guessed is correct
         if (isWordGuessed(word, guess)) {
@@ -131,15 +131,15 @@ async function game() {
 
             updateGuessedWord(guess);
 
-            if (isWordGuessed(word, guessedWord)) {
+            if (isWordGuessed(word, guessedWord)) { // If the word is the same as the guessed word, player wins
                 print(`${language.winCelebration}: '${word}'`, GREEN);
                 isGameOver = true;
             }
         } else {
             
-            wrongGuesses.push(guess);            
+            wrongGuesses.push(guess); // Add wrong guess to the list            
 
-            if (wrongGuesses.length >= HANGMAN_UI.length - 1) {
+            if (wrongGuesses.length >= HANGMAN_UI.length - 1) { // If guess amount reaches the end of the hangman ui (he's hanged) player loses
                 updateUI();
                 print(`${language.deathMessage}. '${word}' ${language.correctWord}.`, RED);                
                 isGameOver = true;
@@ -160,14 +160,14 @@ async function game() {
     async function replay() {
         print(language.replayQuestion)
         let replayAnswer = (await rl.question(language.replayOptions)).toLowerCase();
-        if (replayAnswer == ""){
+        if (replayAnswer == ""){ // ENTER restarts the game
             resetGameState();
             await game();
-        } else if (replayAnswer == "x"){
+        } else if (replayAnswer == "x"){ // Return to start menu
             resetGameState();
             console.clear();
             await startMenu();       
-        } else {
+        } else { // Wait for valid input
             console.clear();
             await replay();
         }
@@ -180,8 +180,7 @@ function updateGuessedWord(guess) {
     for (let i = 0; i < word.length; i++) {
         if (word[i] == guess) {
             guessedWord[i] = guess;
-            // Banana og vi tipper a.
-            // _ -> a
+            // Changes underscores ("_") to the correct letter
         }
     }
 }
