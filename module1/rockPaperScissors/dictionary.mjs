@@ -1,5 +1,5 @@
-const GAME_DICTIONARY = {
-    no:{
+const GAME_DICTIONARY = { // Contains three objects that contain language dictionaries, displayed depending on player input
+    no:{ // Norwegian dictionary
         player: "du",
         npc: "AI",
         player1: "Spiller 1",
@@ -25,7 +25,7 @@ const GAME_DICTIONARY = {
         waiting: "Venter på spiller 2...",
         rpslsMode: "'1' eller '2' spillere?"
     },
-    en:{
+    en:{ // English dictionary
         player: "you",
         npc: "AI",
         player1: "Player 1",
@@ -51,12 +51,12 @@ const GAME_DICTIONARY = {
         waiting: "Waiting for Player 2...",
         rpslsMode: "'1' or '2' players?"
     },
-    global: {
+    global: { // Both languages are present at the start of the game when player selects language
         prompt: "Norsk (no) / English (en) ?"
     }
 };
-const ART = {
-    no:{
+const ART = { // ASCII art with objects for each language
+    no:{ // ASCII in norwegian
         startScreen:String.raw`
 ====================================================================================
  ____  ____  ____  __  __ _    ____   __   __ _  ____    ____   __   ____  __  ____ 
@@ -86,7 +86,7 @@ const ART = {
 \____/\_/\_/ \__/  \___/\____/ \__/(__\_) (__)   (_)  
 ====================================================`
     },
-    en:{
+    en:{ // ASCII in english
         startScreen:String.raw`
 =========================================================================================================
  ____   __    ___  __ _     ____   __   ____  ____  ____     ____   ___  __  ____  ____   __  ____  ____ 
@@ -117,7 +117,7 @@ const ART = {
 (____/(__\_)\_/\_/(_/\_)  (_)  
 ==============================`,
     },
-    global:{
+    global:{ // Splash screen
         splash:String.raw`
 =====================================================================================================================
                                                                                                                     
